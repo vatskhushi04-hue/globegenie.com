@@ -1,332 +1,190 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>GlobeGenie — Your Journey, Your Story</title>
-  <meta name="description" content="GlobeGenie — sleek, elegant, story‑driven travel planning with an AI consultant, interactive maps, and curated blogs."/>
-  <script src="https://cdn.tailwindcss.com"></script>
-  <!-- Leaflet (interactive map) -->
-  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
-  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
-  <style>
-    /* Chatbox custom scroll */
-    .gg-scroll::-webkit-scrollbar{width:8px;height:8px}
-    .gg-scroll::-webkit-scrollbar-thumb{background:#c7d2fe;border-radius:8px}
-  </style>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>GlobeGenie — Let’s get your trip started</title>
+  <meta name="description" content="GlobeGenie — minimal, navy & yellow travel planning with AI assistant, destinations and blogs." />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;800&display=swap" rel="stylesheet">
+  <!-- Leaflet for interactive map -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+  <!-- Main stylesheet -->
+  <link rel="stylesheet" href="style/style.css">
 </head>
-<body class="bg-gray-50 text-gray-800">
-  <!-- NAVBAR -->
-  <header class="sticky top-0 z-50 bg-white/90 backdrop-blur border-b">
-    <div class="max-w-7xl mx-auto px-5 py-4 flex items-center justify-between">
-      <a href="#home" class="text-2xl font-extrabold tracking-tight text-indigo-700">GlobeGenie</a>
-      <nav class="hidden md:flex items-center gap-6 font-semibold">
-        <a href="#home" class="hover:text-indigo-700">Home</a>
-        <a href="#north" class="hover:text-indigo-700">North India Map</a>
-        <a href="#blog" class="hover:text-indigo-700">Blog</a>
-        <a href="#contact" class="hover:text-indigo-700">Contact</a>
-        <a href="#compare" class="px-3 py-2 rounded-lg bg-indigo-600 text-white hover:bg-indigo-700">Compare Deals</a>
+<body>
+
+  <!-- NAV -->
+  <header class="nav">
+    <div class="nav-inner">
+      <div class="brand"><span class="brand-accent">Globe</span>Genie</div>
+      <nav class="nav-links">
+        <a href="#hero">Home</a>
+        <a href="#destinations">Destinations</a>
+        <a href="#blogs">Blogs</a>
+        <a href="#contact">Contact</a>
       </nav>
-      <button id="open-menu" class="md:hidden p-2 rounded-lg border">☰</button>
-    </div>
-    <div id="mobile-menu" class="md:hidden hidden border-t">
-      <nav class="px-5 py-3 grid gap-2 font-semibold">
-        <a href="#home" class="py-2">Home</a>
-        <a href="#north" class="py-2">North India Map</a>
-        <a href="#blog" class="py-2">Blog</a>
-        <a href="#contact" class="py-2">Contact</a>
-        <a href="#compare" class="py-2 text-white bg-indigo-600 rounded-lg text-center">Compare Deals</a>
-      </nav>
+      <button id="mobileToggle" class="mobile-toggle" aria-label="Open menu">☰</button>
     </div>
   </header>
 
   <!-- HERO -->
-  <section id="home" class="relative h-[78vh] grid place-items-center text-center">
-    <img class="absolute inset-0 w-full h-full object-cover" src="https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?q=80&w=2400&auto=format&fit=crop" alt="Himalayan landscape" />
-    <div class="absolute inset-0 bg-black/50"></div>
-    <div class="relative max-w-3xl px-6">
-      <h1 class="text-white text-4xl md:text-6xl font-extrabold drop-shadow">Your next big adventure starts here.</h1>
-      <p class="mt-4 text-white/90 text-lg md:text-xl">Bold, clear, and personal. Tell me your vibe — I’ll craft a journey that actually feels like you.</p>
-      <div class="mt-6 flex justify-center gap-3">
-        <a href="#north" class="px-5 py-3 rounded-lg bg-indigo-500 hover:bg-indigo-600 text-white font-bold">Explore North India</a>
-        <a href="#blog" class="px-5 py-3 rounded-lg bg-white/90 hover:bg-white text-gray-900 font-bold">Read the Blog</a>
+  <section id="hero" class="hero">
+    <div class="hero-wrap">
+      <h1 class="hero-title">Let’s get your trip started!</h1>
+      <p class="hero-sub">Tell me your vibe and I’ll stitch a clean plan — bold, simple, and ready to book.</p>
+      <div class="hero-ctas">
+        <a href="#destinations" class="btn btn-primary">Explore North India</a>
+        <a href="#blogs" class="btn btn-ghost">Read Stories</a>
       </div>
     </div>
   </section>
 
-  <!-- NORTH INDIA INTERACTIVE MAP -->
-  <section id="north" class="py-14">
-    <div class="max-w-7xl mx-auto px-5">
-      <div class="mb-5 flex items-end justify-between gap-4">
-        <div>
-          <h2 class="text-3xl md:text-4xl font-extrabold text-gray-900">Tap the map — North India, your way</h2>
-          <p class="text-gray-600 mt-1">Click a state marker to see quick vibes, best time to visit, and a crisp 3‑day plan.</p>
-        </div>
-        <button onclick="document.getElementById('compare').scrollIntoView({behavior:'smooth'})" class="hidden md:block px-4 py-2 rounded-lg bg-indigo-600 text-white font-semibold hover:bg-indigo-700">Compare Prices</button>
-      </div>
-      <div id="indiaMap" class="w-full h-[520px] rounded-2xl border shadow-sm"></div>
+  <!-- DESTINATIONS + MAP -->
+  <section id="destinations" class="section">
+    <div class="wrap">
+      <h2 class="section-title">Explore North India</h2>
+      <p class="muted">Tap a marker on the map or open a card to see a short 3-day sample itinerary.</p>
 
-      <!-- Detail Drawer -->
-      <div id="detailDrawer" class="mt-5 hidden bg-white rounded-2xl border shadow-md p-5">
-        <div class="flex items-start justify-between gap-4">
-          <div>
-            <h3 id="placeTitle" class="text-2xl font-bold text-gray-900">Destination</h3>
-            <div id="tags" class="mt-2 flex flex-wrap gap-2"></div>
+      <div class="dest-layout">
+        <div id="map" class="map"></div>
+
+        <div class="cards">
+          <article class="dest-card" data-name="Shimla" data-lat="31.1048" data-lng="77.1734">
+            <img src="https://images.unsplash.com/photo-1544723795-3fb6469f5b39?q=80&w=1400&auto=format&fit=crop" alt="Shimla">
+            <div class="card-body">
+              <h3>Shimla</h3>
+              <p class="muted">Colonial charm, ridge walks, cafés.</p>
+              <button class="btn btn-outline view-details">View Details</button>
+            </div>
+          </article>
+
+          <article class="dest-card" data-name="Manali" data-lat="32.2396" data-lng="77.1887">
+            <img src="https://images.unsplash.com/photo-1603262110263-fb0112e7cc33?q=80&w=1400&auto=format&fit=crop" alt="Manali">
+            <div class="card-body">
+              <h3>Manali</h3>
+              <p class="muted">Solang adventures and cozy old town cafés.</p>
+              <button class="btn btn-outline view-details">View Details</button>
+            </div>
+          </article>
+
+          <article class="dest-card" data-name="Rishikesh" data-lat="30.0869" data-lng="78.2676">
+            <img src="https://images.unsplash.com/photo-1603262110265-8f2592f06f3c?q=80&w=1400&auto=format&fit=crop" alt="Rishikesh">
+            <div class="card-body">
+              <h3>Rishikesh</h3>
+              <p class="muted">Ganga aarti, yoga stays, river rafting.</p>
+              <button class="btn btn-outline view-details">View Details</button>
+            </div>
+          </article>
+
+          <article class="dest-card" data-name="Jaipur" data-lat="26.9124" data-lng="75.7873">
+            <img src="https://images.unsplash.com/photo-1581798269146-19f545139ebe?q=80&w=1400&auto=format&fit=crop" alt="Jaipur">
+            <div class="card-body">
+              <h3>Jaipur</h3>
+              <p class="muted">Palaces, vibrant bazaars, rooftop eats.</p>
+              <button class="btn btn-outline view-details">View Details</button>
+            </div>
+          </article>
+        </div>
+      </div>
+
+      <!-- Detail drawer (hidden until a marker/card clicked) -->
+      <div id="detailDrawer" class="drawer hidden" aria-hidden="true">
+        <button id="closeDrawer" class="drawer-close" aria-label="Close">✕</button>
+        <h3 id="drawerTitle">Destination</h3>
+        <div id="drawerTags" class="drawer-tags"></div>
+        <p id="drawerSummary" class="muted"></p>
+        <div id="drawerItinerary"></div>
+        <div class="drawer-actions">
+          <a href="#contact" class="btn btn-primary">Plan this Trip</a>
+          <button id="drawerCompare" class="btn btn-ghost">Compare Prices</button>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- BLOGS -->
+  <section id="blogs" class="section bg-soft">
+    <div class="wrap">
+      <h2 class="section-title">Travel Stories & Tips</h2>
+      <div class="blog-grid">
+        <article class="blog-card">
+          <img src="https://images.unsplash.com/photo-1507525428034-b723cf961d3e?q=80&w=1400&auto=format&fit=crop" alt="">
+          <div class="blog-body">
+            <h3>I Need a Break, But I Can't Figure Out Where to Go</h3>
+            <p class="muted">Overwhelmed by choices? We show you a 4-step way to pick a trip — fast.</p>
+            <a href="#" class="link">Read →</a>
           </div>
-          <button class="text-sm font-semibold text-indigo-700" onclick="document.getElementById('detailDrawer').classList.add('hidden')">Close ✕</button>
-        </div>
-        <p id="placeSummary" class="mt-3 text-gray-700"></p>
-        <div id="itinerary" class="mt-3"></div>
-        <div class="mt-4">
-          <button onclick="document.getElementById('compare').scrollIntoView({behavior:'smooth'})" class="px-4 py-2 rounded-lg bg-indigo-600 text-white font-semibold hover:bg-indigo-700">Compare prices for this trip</button>
-        </div>
-      </div>
-    </div>
-  </section>
+        </article>
 
-  <!-- BLOG SHOWCASE -->
-  <section id="blog" class="py-14 bg-indigo-50">
-    <div class="max-w-7xl mx-auto px-5">
-      <div class="flex items-end justify-between mb-6">
-        <div>
-          <h2 class="text-3xl md:text-4xl font-extrabold">Stories from the road, lessons from the sky</h2>
-          <p class="text-gray-600 mt-1">I keep it real — tips, hidden spots, and hacks, all in my voice.</p>
-        </div>
-        <a href="#" class="text-indigo-700 font-semibold">View all →</a>
-      </div>
-      <div id="blogGrid" class="grid gap-6 md:grid-cols-3"></div>
-    </div>
-  </section>
+        <article class="blog-card">
+          <img src="https://images.unsplash.com/photo-1549887534-3d1f1c4a2d7d?q=80&w=1400&auto=format&fit=crop" alt="">
+          <div class="blog-body">
+            <h3>North India Under ₹12k: Weekend Plans</h3>
+            <p class="muted">Budget-friendly itineraries that still feel premium.</p>
+            <a href="#" class="link">Read →</a>
+          </div>
+        </article>
 
-  <!-- COMPARE (placeholder for now) -->
-  <section id="compare" class="py-14">
-    <div class="max-w-7xl mx-auto px-5">
-      <h2 class="text-3xl md:text-4xl font-extrabold">Compare Deals — Flights • Trains • Stays</h2>
-      <p class="text-gray-600 mt-1">Real‑time APIs come next. For now, we’ll simulate results and perfect UX.</p>
-      <div class="mt-5 grid md:grid-cols-5 gap-3">
-        <input id="from" class="border rounded-xl px-3 py-2" placeholder="From (e.g., Delhi)"/>
-        <input id="to" class="border rounded-xl px-3 py-2" placeholder="To (e.g., Manali)"/>
-        <input id="date" type="date" class="border rounded-xl px-3 py-2"/>
-        <select id="mode" class="border rounded-xl px-3 py-2">
-          <option value="any">Any</option>
-          <option value="flight">Flights</option>
-          <option value="train">Trains</option>
-          <option value="stay">Stays</option>
-        </select>
-        <button onclick="runCompare()" class="px-4 py-2 rounded-xl bg-indigo-600 text-white font-semibold hover:bg-indigo-700">Find Deals</button>
-      </div>
-      <div class="mt-4 overflow-auto">
-        <table class="min-w-full text-left text-sm">
-          <thead class="bg-gray-100">
-            <tr>
-              <th class="p-3">Type</th>
-              <th class="p-3">Provider</th>
-              <th class="p-3">Route</th>
-              <th class="p-3">Date</th>
-              <th class="p-3">Price (₹)</th>
-              <th class="p-3">Notes</th>
-            </tr>
-          </thead>
-          <tbody id="resultsBody"></tbody>
-        </table>
+        <article class="blog-card">
+          <img src="https://images.unsplash.com/photo-1526772662000-3f88f10405ff?q=80&w=1400&auto=format&fit=crop" alt="">
+          <div class="blog-body">
+            <h3>Train vs Flight vs Bus — What’s Smart?</h3>
+            <p class="muted">Practical advice: when to save time vs when to save money.</p>
+            <a href="#" class="link">Read →</a>
+          </div>
+        </article>
       </div>
     </div>
   </section>
 
   <!-- CONTACT -->
-  <section id="contact" class="py-14 bg-white">
-    <div class="max-w-7xl mx-auto px-5">
-      <h2 class="text-3xl md:text-4xl font-extrabold">Let’s talk travel like friends do</h2>
-      <p class="text-gray-600 mt-1">Tell me your vibe, your dates, your budget — I’ll do the rest.</p>
-      <div class="mt-4 grid md:grid-cols-4 gap-3">
-        <input id="cname" class="border rounded-xl px-3 py-2" placeholder="Your name"/>
-        <input id="cemail" class="border rounded-xl px-3 py-2" placeholder="Email or WhatsApp"/>
-        <input id="cmsg" class="md:col-span-2 border rounded-xl px-3 py-2" placeholder="Tell me where you want to go…"/>
-      </div>
-      <button onclick="alert('Lead saved locally. We’ll wire this to email/Sheets next.');" class="mt-4 px-4 py-2 rounded-xl bg-indigo-600 text-white font-semibold hover:bg-indigo-700">Send</button>
+  <section id="contact" class="section">
+    <div class="wrap contact-wrap">
+      <h2 class="section-title">Talk to GlobeGenie</h2>
+      <p class="muted">Tell us dates, rough budget, and vibe — we’ll take it from there.</p>
+      <form id="leadForm" class="lead-form">
+        <input id="leadName" placeholder="Your name" required>
+        <input id="leadEmail" type="email" placeholder="Email or WhatsApp" required>
+        <textarea id="leadMsg" placeholder="Where, when, budget..." rows="4"></textarea>
+        <div class="form-actions">
+          <button type="submit" class="btn btn-primary">Send</button>
+          <button type="button" id="saveDraft" class="btn btn-ghost">Save Draft</button>
+        </div>
+      </form>
     </div>
   </section>
 
   <!-- FOOTER -->
-  <footer class="bg-gray-900 text-white">
-    <div class="max-w-7xl mx-auto px-5 py-8 flex flex-col md:flex-row items-center justify-between gap-4">
-      <p>© <span id="year"></span> GlobeGenie • Built with love and clean plans</p>
-      <a href="#home" class="text-indigo-300 hover:text-white">Back to top</a>
+  <footer class="footer">
+    <div class="wrap footer-inner">
+      <div>© <span id="year"></span> GlobeGenie</div>
+      <div class="muted">Built for travel, built to move.</div>
     </div>
   </footer>
 
-  <!-- FLOATING CHATBOT -->
-  <button id="chatLaunch" class="fixed right-5 bottom-5 z-[60] px-4 py-3 rounded-full bg-indigo-600 text-white font-extrabold shadow-lg hover:bg-indigo-700">Chat with Genie 🤖</button>
-  <div id="chatBox" class="hidden fixed right-5 bottom-24 z-[60] w-80 max-h-[70vh] bg-white rounded-2xl border shadow-2xl overflow-hidden">
-    <div class="bg-indigo-600 text-white px-4 py-3 flex items-center justify-between">
-      <span class="font-extrabold">Genie • AI Travel Buddy</span>
-      <button onclick="toggleChat()" class="font-extrabold">✕</button>
+  <!-- CHATBOT FAB -->
+  <button id="chatLaunch" class="chat-fab" aria-label="Open chat">💬</button>
+
+  <!-- CHAT BOX -->
+  <div id="chatBox" class="chatbox hidden" aria-hidden="true">
+    <div class="chat-header">
+      <div class="chat-title">Genie • Travel Assistant</div>
+      <button id="chatClose" class="chat-close" aria-label="Close chat">✕</button>
     </div>
-    <div id="chatMessages" class="gg-scroll p-3 space-y-2 overflow-auto" style="max-height: 50vh;">
-      <div class="bg-indigo-50 p-2 rounded-xl text-sm">Hey wanderer 👋 Tell me your vibe — mountains, beaches, or a city that never sleeps?</div>
+    <div id="chatMessages" class="chat-messages">
+      <div class="chat-bubble bot">Hey — tell me your vibe (mountain / beach / city) + days + budget.</div>
     </div>
-    <div class="border-t p-2 flex gap-2">
-      <input id="chatInput" class="flex-1 border rounded-xl px-3 py-2 text-sm" placeholder="e.g., Himachal in Oct under 20k"/>
-      <button onclick="sendMsg()" class="px-3 py-2 rounded-xl bg-indigo-600 text-white font-bold">Send</button>
+    <div class="chat-input">
+      <input id="chatInput" placeholder="e.g., Manali • 3 days • ₹15k" />
+      <button id="chatSend" class="btn btn-primary">Send</button>
     </div>
   </div>
 
-  <script>
-    // Utils
-    document.getElementById('year').textContent = new Date().getFullYear();
-    document.getElementById('open-menu').addEventListener('click', ()=>{
-      document.getElementById('mobile-menu').classList.toggle('hidden');
-    });
-
-    /* =============================
-       INTERACTIVE MAP (North India)
-    ==============================*/
-    const map = L.map('indiaMap',{scrollWheelZoom:false}).setView([30.5, 77.5], 6);
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {maxZoom: 19, attribution: '&copy; OpenStreetMap'}).addTo(map);
-
-    const northStates = [
-      { id:'jk', name:'Jammu & Kashmir', coords:[34.0837, 74.7973], tags:['Snow','Meadows','Houseboats'],
-        summary: 'Gulmarg snow days, Srinagar shikara evenings, Pahalgam pine trails — soft and surreal.',
-        itin:[ 'Day 1 — Srinagar: Dal Lake shikara + Mughal gardens', 'Day 2 — Gulmarg: Gondola + snow play', 'Day 3 — Pahalgam: Betaab Valley + café crawl' ] },
-      { id:'hp', name:'Himachal Pradesh', coords:[31.1048, 77.1734], tags:['Mountains','Cafés','Workations'],
-        summary: 'Bring a hoodie and a book. Calm hearts, long views, and clean air.',
-        itin:[ 'Day 1 — Shimla Ridge + hot chai spots', 'Day 2 — Mashobra hike + picnic', 'Day 3 — Kufri forest trail + slow evening' ] },
-      { id:'uk', name:'Uttarakhand', coords:[30.3165, 78.0322], tags:['Spiritual','Treks','Rivers'],
-        summary: 'Rishikesh sunsets, Auli cable car, Chopta meadows — spirit meets scenery.',
-        itin:[ 'Day 1 — Rishikesh: Ganga aarti + café by the river', 'Day 2 — Auli: Ropeway + snow views', 'Day 3 — Chopta: Easy trek + stargaze' ] },
-      { id:'pb', name:'Punjab', coords:[31.6340, 74.8723], tags:['Food','Culture','Golden Temple'],
-        summary: 'Langar warmth, lassi stops, and streets that hug you back.',
-        itin:[ 'Day 1 — Amritsar: Golden Temple + langar', 'Day 2 — Wagah border + old city eats', 'Day 3 — Farm stay experience' ] },
-      { id:'hr', name:'Haryana', coords:[28.4595, 77.0266], tags:['Urban','Malls','Golf'],
-        summary: 'Fast city breaks, fine dining, and short luxury layovers.',
-        itin:[ 'Day 1 — Gurugram cafés + cyber hub', 'Day 2 — Sultanpur Bird Sanctuary', 'Day 3 — Heritage transport museum' ] },
-      { id:'dl', name:'Delhi (NCT)', coords:[28.6139, 77.2090], tags:['Heritage','Food','Markets'],
-        summary: 'Old Delhi chaos, New Delhi charm — two playlists, one city.',
-        itin:[ 'Day 1 — Red Fort + Chandni Chowk eats', 'Day 2 — Lodhi Art + India Gate evening', 'Day 3 — Mehrauli ruins + café night' ] },
-      { id:'rj', name:'Rajasthan', coords:[26.9124, 75.7873], tags:['Palaces','Desert','Culture'],
-        summary: 'Havelis, thalis, and stories in sandstone.',
-        itin:[ 'Day 1 — Jaipur: City Palace + Hawa Mahal', 'Day 2 — Amer Fort + stepwell + sunset', 'Day 3 — Pushkar day trip' ] },
-      { id:'up', name:'Uttar Pradesh', coords:[26.8467, 80.9462], tags:['Spiritual','Heritage','Food'],
-        summary: 'Taj wonder, Varanasi ghats, Lucknow kebabs — classic and soulful.',
-        itin:[ 'Day 1 — Agra: Taj Mahal + Mehtab Bagh', 'Day 2 — Varanasi: Sunrise boat + ghats', 'Day 3 — Lucknow: Imambara + food trail' ] },
-    ];
-
-    const drawer = document.getElementById('detailDrawer');
-    const placeTitle = document.getElementById('placeTitle');
-    const placeSummary = document.getElementById('placeSummary');
-    const tagsBox = document.getElementById('tags');
-    const itinBox = document.getElementById('itinerary');
-
-    northStates.forEach(s=>{
-      const m = L.marker(s.coords).addTo(map).bindPopup(`<b>${s.name}</b><br/>Tap for details`);
-      m.on('click', ()=> renderDetail(s));
-    });
-
-    function renderDetail(s){
-      placeTitle.textContent = s.name;
-      placeSummary.textContent = s.summary;
-      tagsBox.innerHTML = s.tags.map(t=>`<span class='px-2 py-1 rounded-full bg-indigo-50 text-indigo-700 text-xs font-bold'>${t}</span>`).join('');
-      itinBox.innerHTML = `
-        <h4 class='font-extrabold mt-2'>Sample Itinerary</h4>
-        <ul class='list-disc ml-6 mt-1 text-gray-700'>
-          ${s.itin.map(i=>`<li>${i}</li>`).join('')}
-        </ul>`;
-      drawer.classList.remove('hidden');
-      drawer.scrollIntoView({behavior:'smooth'});
-    }
-
-    /* =============================
-       BLOG — titles + placeholder cards
-    ==============================*/
-    const blogPosts = [
-      {title:'Best Time to Visit Himachal (2025)', img:'https://images.unsplash.com/photo-1504805572947-34fad45aed93?q=80&w=1400&auto=format&fit=crop'},
-      {title:'Delhi in 48 Hours — Food, Art, Markets', img:'https://images.unsplash.com/photo-1512453979798-5ea266f8880c?q=80&w=1400&auto=format&fit=crop'},
-      {title:'Rajasthan Beyond Jaipur — Jaisalmer to Udaipur', img:'https://images.unsplash.com/photo-1548013146-72479768bada?q=80&w=1400&auto=format&fit=crop'},
-      {title:'Uttarakhand Treks for Beginners', img:'https://images.unsplash.com/photo-1596445836561-991b9f7cac5a?q=80&w=1400&auto=format&fit=crop'},
-      {title:'Varanasi Sunrise Playbook', img:'https://images.unsplash.com/photo-1563720223185-11003d516935?q=80&w=1400&auto=format&fit=crop'},
-      {title:'Amritsar in a Day — Soul & Street Food', img:'https://images.unsplash.com/photo-1548013146-72479768bada?q=80&w=1400&auto=format&fit=crop'},
-      {title:'Luxury or Smart Budget: Maldives 101', img:'https://images.unsplash.com/photo-1500375592092-40eb2168fd21?q=80&w=1400&auto=format&fit=crop'},
-      {title:'Workation Guide: Mountains that Work', img:'https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?q=80&w=1400&auto=format&fit=crop'},
-      {title:'Goa Beyond Baga — Calm Beaches & Cafés', img:'https://images.unsplash.com/photo-1548013146-72479768bada?q=80&w=1400&auto=format&fit=crop'},
-      {title:'India Winter Trips — Cozy & Clean Plans', img:'https://images.unsplash.com/photo-1512453979798-5ea266f8880c?q=80&w=1400&auto=format&fit=crop'}
-    ];
-
-    const blogGrid = document.getElementById('blogGrid');
-    blogGrid.innerHTML = blogPosts.map(b=>`
-      <article class='bg-white rounded-2xl overflow-hidden border shadow-sm hover:shadow-md transition'>
-        <img src='${b.img}' alt='' class='w-full h-44 object-cover'/>
-        <div class='p-4'>
-          <h3 class='font-extrabold text-lg'>${b.title}</h3>
-          <p class='mt-1 text-gray-600 text-sm'>Story-driven, no fluff. Send me your content and I’ll plug it here.</p>
-          <a href='#' class='inline-block mt-3 text-indigo-700 font-semibold'>Read →</a>
-        </div>
-      </article>
-    `).join('');
-
-    /* =============================
-       COMPARE — mock data + filter
-    ==============================*/
-    const sampleDeals = [
-      {type:'flight', provider:'IndiGo', from:'Delhi', to:'Manali', date:'2025-09-12', price:6599, note:'Via Kullu • 2h40m'},
-      {type:'flight', provider:'Vistara', from:'Delhi', to:'Srinagar', date:'2025-09-15', price:7299, note:'Non-stop • 1h25m'},
-      {type:'train', provider:'IRCTC', from:'Delhi', to:'Amritsar', date:'2025-09-12', price:850, note:'Shatabdi chair car'},
-      {type:'train', provider:'IRCTC', from:'Delhi', to:'Jaipur', date:'2025-09-12', price:650, note:'Shatabdi'},
-      {type:'stay', provider:'Homestay: Old Manali', from:'Manali', to:'Manali', date:'2025-09-12', price:2200, note:'Per night • Mountain view'},
-      {type:'stay', provider:'Haveli: Jaipur', from:'Jaipur', to:'Jaipur', date:'2025-09-13', price:2800, note:'Per night • Heritage'}
-    ];
-
-    function runCompare(){
-      const from = (document.getElementById('from').value||'').toLowerCase();
-      const to   = (document.getElementById('to').value||'').toLowerCase();
-      const date = document.getElementById('date').value;
-      const mode = document.getElementById('mode').value;
-      const rows = sampleDeals.filter(d=>{
-        const f = !from || d.from.toLowerCase().includes(from);
-        const t = !to   || d.to.toLowerCase().includes(to);
-        const dt= !date || d.date===date;
-        const m = mode==='any' || d.type===mode;
-        return f && t && dt && m;
-      }).sort((a,b)=>a.price-b.price);
-      const body = document.getElementById('resultsBody');
-      body.innerHTML = rows.length ? rows.map(r=>`
-        <tr class='border-b'>
-          <td class='p-3'>${r.type}</td>
-          <td class='p-3'>${r.provider}</td>
-          <td class='p-3'>${r.from} → ${r.to}</td>
-          <td class='p-3'>${r.date}</td>
-          <td class='p-3'>₹${r.price.toLocaleString()}</td>
-          <td class='p-3'>${r.note}</td>
-        </tr>`).join('') : `<tr><td class='p-3' colspan='6'>No sample deals matched. Try different filters.</td></tr>`;
-    }
-
-    /* =============================
-       SIMPLE AI CHATBOT (front‑end)
-       Upgrade path: swap reply() with API
-    ==============================*/
-    function toggleChat(){
-      document.getElementById('chatBox').classList.toggle('hidden');
-    }
-    document.getElementById('chatLaunch').addEventListener('click', toggleChat);
-
-    const chatMessages = document.getElementById('chatMessages');
-    function addMsg(text, who='bot'){
-      const el = document.createElement('div');
-      el.className = `p-2 rounded-xl text-sm ${who==='bot'?'bg-indigo-50':'bg-green-50 ml-auto'}`;
-      el.textContent = text; chatMessages.appendChild(el); chatMessages.scrollTop = chatMessages.scrollHeight;
-    }
-    function sendMsg(){
-      const ip = document.getElementById('chatInput');
-      const q = ip.value.trim(); if(!q) return; ip.value=''; addMsg(q,'user'); setTimeout(()=>addMsg(reply(q),'bot'), 300);
-    }
-    function reply(q){
-      const s=q.toLowerCase();
-      if(s.includes('himachal')||s.includes('manali')||s.includes('mountain')) return 'Mountains for the soul. Himachal mood: Mashobra hikes, café sunsets, calm stays. Dates + budget?';
-      if(s.includes('delhi')) return 'Two playlists, one city. Want a 2‑day food + heritage sprint or a slow market crawl?';
-      if(s.includes('jaipur')||s.includes('rajasthan')) return 'Royal and raw. I can stitch Amer + City Palace + a secret stepwell sunset. How many days?';
-      if(s.includes('compare')||s.includes('price')||s.includes('flight')||s.includes('train')||s.includes('stay')) return 'Jump to Compare Deals below — enter route & dates. I’ll surface clean options. Live APIs come next.';
-      if(s.includes('hi')||s.includes('hello')) return 'Hey 👋 Tell me your vibe — beaches, mountains, or a city that never sleeps?';
-      return 'Bold and simple: destination + dates + budget. I’ll shape a plan that actually feels like you.';
-    }
-  </script>
+  <!-- Main script -->
+  <script src="script/script.js"></script>
 </body>
 </html>

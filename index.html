@@ -1,98 +1,269 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>I Need a Break – Your Travel Buddy</title>
-  <link rel="stylesheet" href="style.css">
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>GlobeGenie — I Need a Break</title>
+  <meta name="description" content="GlobeGenie helps you decide where to go, plan fast, and book smart."/>
+  <style>
+    :root{
+      --bg:#f7f8fa;
+      --ink:#1f2937;
+      --muted:#6b7280;
+      --brand:#2563eb;
+      --brand-2:#0ea5e9;
+      --accent:#f59e0b;
+      --card:#ffffff;
+      --shadow:0 6px 18px rgba(0,0,0,.08);
+      --radius:14px;
+    }
+    *{box-sizing:border-box;margin:0;padding:0}
+    html,body{height:100%}
+    body{font-family:system-ui,-apple-system,Segoe UI,Roboto,Inter,Arial,sans-serif;background:var(--bg);color:var(--ink);line-height:1.55}
+
+    /* Header / Nav */
+    header{position:sticky;top:0;z-index:50;background:#0b1220;color:#fff;box-shadow:var(--shadow)}
+    .nav{max-width:1100px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;padding:14px 18px}
+    .brand{font-weight:800;letter-spacing:.3px}
+    .brand span{background:linear-gradient(90deg,var(--brand),var(--brand-2));-webkit-background-clip:text;background-clip:text;color:transparent}
+    .navlinks{display:flex;gap:18px}
+    .navlinks a{color:#e5e7eb;text-decoration:none;font-weight:600}
+    .navlinks a:hover{color:#fff}
+    .burger{display:none;font-size:26px;cursor:pointer;color:#e5e7eb}
+
+    /* Hero */
+    .hero{background:linear-gradient(135deg,var(--brand) 0%,var(--brand-2) 100%);color:#fff}
+    .hero-wrap{max-width:1100px;margin:0 auto;padding:64px 18px;text-align:center}
+    .hero h1{font-size:clamp(26px,4vw,40px);font-weight:900;line-height:1.2;margin-bottom:12px}
+    .hero p{opacity:.95;margin-bottom:18px}
+    .search{display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
+    .search input{padding:12px 14px;border-radius:12px;border:0;min-width:240px;max-width:440px;width:70%}
+    .btn{background:#111827;color:#fff;border:0;border-radius:12px;padding:12px 16px;font-weight:700;cursor:pointer}
+    .btn:hover{filter:brightness(1.05)}
+
+    /* Destinations */
+    section{padding:42px 18px}
+    .wrap{max-width:1100px;margin:0 auto}
+    .section-title{font-size:clamp(20px,2.5vw,28px);font-weight:800;margin-bottom:16px}
+    .muted{color:var(--muted)}
+    .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:18px;margin-top:18px}
+    .card{background:var(--card);border-radius:var(--radius);box-shadow:var(--shadow);overflow:hidden;display:flex;flex-direction:column}
+    .card img{width:100%;height:170px;object-fit:cover}
+    .card .pad{padding:14px}
+    .tag{display:inline-block;background:#eef2ff;color:#3730a3;font-weight:700;padding:6px 10px;border-radius:999px;font-size:12px}
+
+    /* Blog */
+    .blog article{background:var(--card);border-radius:var(--radius);box-shadow:var(--shadow);padding:16px}
+    .blog h3{font-size:18px;margin-bottom:6px}
+    .blog p{color:var(--muted);font-size:14px}
+
+    /* Contact */
+    .contact form{display:grid;gap:12px;max-width:520px}
+    .input, textarea{padding:12px 14px;border:1px solid #e5e7eb;border-radius:12px;background:#fff}
+    textarea{min-height:120px;resize:vertical}
+
+    /* Footer */
+    footer{background:#0b1220;color:#9ca3af;text-align:center;padding:18px}
+
+    /* Chat widget (placeholder) */
+    .chat-fab{position:fixed;right:18px;bottom:18px;background:linear-gradient(135deg,var(--brand),var(--brand-2));color:#fff;width:56px;height:56px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:900;cursor:pointer;box-shadow:var(--shadow)}
+    .chat{position:fixed;right:18px;bottom:86px;width:320px;max-width:90vw;background:#0b1220;color:#e5e7eb;border-radius:16px;display:none;flex-direction:column;box-shadow:var(--shadow);overflow:hidden}
+    .chat header{background:#0b1220;padding:10px 14px;display:flex;justify-content:space-between;align-items:center;position:unset}
+    .chat .body{background:#0f172a;padding:12px;height:260px;overflow:auto}
+    .bubble{background:#1f2937;color:#e5e7eb;border-radius:12px;padding:8px 10px;margin:6px 0;max-width:85%}
+    .bubble.user{background:#111827;margin-left:auto}
+    .chat .input{display:flex;gap:8px;padding:10px;background:#0b1220}
+    .chat .input input{flex:1;border-radius:10px;border:1px solid #374151;padding:10px;background:#0f172a;color:#e5e7eb}
+
+    /* Mobile nav */
+    @media (max-width: 760px){
+      .navlinks{display:none;position:absolute;top:56px;right:12px;background:#0b1220;padding:12px;border-radius:12px;flex-direction:column;gap:12px;box-shadow:var(--shadow)}
+      .burger{display:block}
+      .navlinks.show{display:flex}
+    }
+  </style>
 </head>
 <body>
-  <!-- Header -->
-  <header class="header">
-    <div class="logo">I Need a Break</div>
+
+  <!-- HEADER -->
+  <header>
     <nav class="nav">
-      <ul>
-        <li><a href="#hero">Home</a></li>
-        <li><a href="#destinations">Destinations</a></li>
-        <li><a href="#blogs">Blogs</a></li>
-        <li><a href="#contact">Contact</a></li>
-      </ul>
+      <div class="brand">GlobeGenie <span>Travel</span></div>
+      <div class="navlinks" id="navlinks">
+        <a href="#destinations">Destinations</a>
+        <a href="#blog">Blog</a>
+        <a href="#contact">Contact</a>
+      </div>
+      <div class="burger" id="burger">☰</div>
     </nav>
-    <div class="menu-toggle">&#9776;</div>
   </header>
 
-  <!-- Hero Section -->
-  <section class="hero" id="hero">
-    <div class="hero-content">
-      <h1>I need a break, but I can't figure out where to go and how to book stuff</h1>
-      <p>Your stress-free travel buddy – discover, plan & book in one place!</p>
-      <a href="#destinations" class="btn">Start Exploring</a>
-    </div>
-  </section>
-
-  <!-- Destinations Section -->
-  <section class="destinations" id="destinations">
-    <h2>Top Destinations</h2>
-    <div class="grid">
-      <div class="card">
-        <img src="https://source.unsplash.com/400x300/?beach" alt="Beach">
-        <h3>Beach Escapes</h3>
-        <p>Find the best beaches to unwind and relax.</p>
-      </div>
-      <div class="card">
-        <img src="https://source.unsplash.com/400x300/?mountains" alt="Mountains">
-        <h3>Mountain Adventures</h3>
-        <p>Breathtaking views for nature lovers.</p>
-      </div>
-      <div class="card">
-        <img src="https://source.unsplash.com/400x300/?city" alt="City">
-        <h3>City Breaks</h3>
-        <p>Explore vibrant city life around the world.</p>
+  <!-- HERO -->
+  <section class="hero">
+    <div class="hero-wrap">
+      <h1>I need a break — but where do I go and how do I book it?</h1>
+      <p>Tell GlobeGenie your vibe, time, and budget. We’ll suggest destinations, a crisp itinerary, and the best-value options. Zero overthinking.</p>
+      <div class="search">
+        <input id="searchBox" placeholder="Try: Manali, Jaipur, Maldives…" />
+        <button class="btn" id="searchBtn">Search</button>
       </div>
     </div>
   </section>
 
-  <!-- Blog Section -->
-  <section class="blogs" id="blogs">
-    <h2>Travel Tips & Blogs</h2>
-    <div class="blog-grid">
-      <article>
-        <img src="https://source.unsplash.com/400x250/?travel" alt="Travel Blog">
-        <h3>5 Hacks to Make Booking Easy</h3>
-        <p>Struggling to plan? Here are simple tricks to make travel planning stress-free...</p>
-        <a href="#">Read More</a>
-      </article>
-      <article>
-        <img src="https://source.unsplash.com/400x250/?vacation" alt="Vacation">
-        <h3>Best Budget Destinations for 2025</h3>
-        <p>Want a break without breaking the bank? These destinations are perfect for you...</p>
-        <a href="#">Read More</a>
-      </article>
-      <article>
-        <img src="https://source.unsplash.com/400x250/?adventure" alt="Adventure">
-        <h3>How to Pick Your Perfect Spot</h3>
-        <p>Confused about where to go? Here's a guide to find your dream destination...</p>
-        <a href="#">Read More</a>
-      </article>
+  <!-- DESTINATIONS -->
+  <section id="destinations">
+    <div class="wrap">
+      <h2 class="section-title">North India Highlights</h2>
+      <p class="muted">Tap a card to see a quick 3-day sample plan (we’ll wire the map next).</p>
+      <div class="grid" id="destGrid">
+        <div class="card" data-name="Shimla">
+          <img src="https://images.unsplash.com/photo-1544723795-3fb6469f5b39?q=80&w=1200&auto=format&fit=crop" alt="Shimla">
+          <div class="pad">
+            <span class="tag">Himachal</span>
+            <h3>Shimla</h3>
+            <p class="muted">Colonial charm, ridge walks, café hopping.</p>
+          </div>
+        </div>
+        <div class="card" data-name="Manali">
+          <img src="https://images.unsplash.com/photo-1603262110263-fb0112e7cc33?q=80&w=1200&auto=format&fit=crop" alt="Manali">
+          <div class="pad">
+            <span class="tag">Himachal</span>
+            <h3>Manali</h3>
+            <p class="muted">Solang adventures and Old Manali cafés.</p>
+          </div>
+        </div>
+        <div class="card" data-name="Jaipur">
+          <img src="https://images.unsplash.com/photo-1581798269146-19f545139ebe?q=80&w=1200&auto=format&fit=crop" alt="Jaipur">
+          <div class="pad">
+            <span class="tag">Rajasthan</span>
+            <h3>Jaipur</h3>
+            <p class="muted">Hawa Mahal, Amer Fort, rooftop thalis.</p>
+          </div>
+        </div>
+        <div class="card" data-name="Rishikesh">
+          <img src="https://images.unsplash.com/photo-1603262110265-8f2592f06f3c?q=80&w=1200&auto=format&fit=crop" alt="Rishikesh">
+          <div class="pad">
+            <span class="tag">Uttarakhand</span>
+            <h3>Rishikesh</h3>
+            <p class="muted">Ganga aarti, yoga stays, river rafting.</p>
+          </div>
+        </div>
+      </div>
     </div>
   </section>
 
-  <!-- Contact Section -->
-  <section class="contact" id="contact">
-    <h2>Contact Us</h2>
-    <form class="contact-form">
-      <input type="text" placeholder="Your Name" required>
-      <input type="email" placeholder="Your Email" required>
-      <textarea placeholder="Your Message" required></textarea>
-      <button type="submit" class="btn">Send Message</button>
-    </form>
+  <!-- BLOG -->
+  <section id="blog">
+    <div class="wrap blog">
+      <h2 class="section-title">Travel Tips & Stories</h2>
+      <div class="grid">
+        <article>
+          <h3>I Need a Break, But I Can’t Pick a Place</h3>
+          <p>Overwhelmed by choices? Here’s a simple 4-step method to pick your next destination without second-guessing.</p>
+        </article>
+        <article>
+          <h3>North India Under ₹12k: Long Weekend Plans</h3>
+          <p>Ready-made itineraries with stay, food, and local transport ideas that won’t break the bank.</p>
+        </article>
+        <article>
+          <h3>Train vs Flight vs Bus — What’s Smart?</h3>
+          <p>When to choose which, typical costs, and time-saving hacks for real people with real budgets.</p>
+        </article>
+      </div>
+    </div>
   </section>
 
-  <!-- Footer -->
-  <footer class="footer">
-    <p>&copy; 2025 I Need a Break. All rights reserved.</p>
+  <!-- CONTACT -->
+  <section id="contact">
+    <div class="wrap contact">
+      <h2 class="section-title">Talk to Us</h2>
+      <form onsubmit="event.preventDefault(); alert('Thanks! We’ll get back soon.');">
+        <input class="input" placeholder="Your name" required />
+        <input class="input" type="email" placeholder="Your email" required />
+        <textarea class="input" placeholder="Your message (where, when, budget)"></textarea>
+        <button class="btn" type="submit">Send</button>
+      </form>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    <p>© 2025 GlobeGenie. Built with love for explorers.</p>
   </footer>
 
-  <script src="script.js" defer></script>
+  <!-- CHAT PLACEHOLDER -->
+  <div class="chat-fab" id="chatFab">💬</div>
+  <div class="chat" id="chatBox" aria-hidden="true">
+    <header>
+      <strong>GlobeGenie — AI Travel (Soon)</strong>
+      <button class="btn" style="padding:6px 10px;border-radius:8px" id="chatClose">Close</button>
+    </header>
+    <div class="body" id="chatBody">
+      <div class="bubble">Hey! Tell me your vibe (mountains / beach / city), days, and rough budget. I’ll suggest a crisp plan.</div>
+    </div>
+    <div class="input">
+      <input id="chatInput" placeholder="Type here… e.g., 3 days, ₹15k, mountains" />
+      <button class="btn" id="chatSend">Send</button>
+    </div>
+  </div>
+
+  <script>
+    // Mobile nav toggle
+    const burger = document.getElementById('burger');
+    const navlinks = document.getElementById('navlinks');
+    if (burger) { burger.onclick = () => navlinks.classList.toggle('show'); }
+
+    // Search demo
+    document.getElementById('searchBtn').onclick = () => {
+      const q = (document.getElementById('searchBox').value || '').trim();
+      if(!q) { alert('Tell me a place or vibe (e.g., Manali, beach)…'); return; }
+      alert('Searching ideas for: ' + q);
+    };
+
+    // Destination click demo
+    document.querySelectorAll('#destGrid .card').forEach(card=>{
+      card.addEventListener('click', ()=>{
+        const name = card.dataset.name || 'this place';
+        alert(`${name} — Sample 3-day plan:\n\nDay 1: Arrive & local walk\nDay 2: Signature sights & a café\nDay 3: Sunrise point & return\n\n(We’ll auto-generate real itineraries soon.)`);
+      });
+    });
+
+    // Chat UI (dummy for now)
+    const chatFab = document.getElementById('chatFab');
+    const chatBox = document.getElementById('chatBox');
+    const chatClose = document.getElementById('chatClose');
+    const chatBody = document.getElementById('chatBody');
+    const chatInput = document.getElementById('chatInput');
+    const chatSend = document.getElementById('chatSend');
+
+    const openChat = ()=>{ chatBox.style.display='flex'; chatBox.setAttribute('aria-hidden','false'); };
+    const closeChat = ()=>{ chatBox.style.display='none'; chatBox.setAttribute('aria-hidden','true'); };
+    chatFab.onclick = openChat; chatClose.onclick = closeChat;
+
+    chatSend.onclick = ()=>{
+      const text = (chatInput.value||'').trim();
+      if(!text) return;
+      // user bubble
+      const u = document.createElement('div');
+      u.className='bubble user'; u.textContent = text; chatBody.appendChild(u);
+      chatInput.value='';
+      chatBody.scrollTop = chatBody.scrollHeight;
+
+      // bot reply (dummy rules)
+      const b = document.createElement('div'); b.className='bubble';
+      const t = text.toLowerCase();
+      if(t.includes('budget') || t.includes('₹') || t.includes('inr')){
+        b.textContent = 'Got it—budget noted. Prefer homestays or hotels? (We’ll fetch live prices soon.)';
+      } else if(t.includes('manali') || t.includes('shimla')){
+        b.textContent = 'Nice pick! Best time Oct–Mar. Want a relaxed vibe or adventure heavy?';
+      } else if(t.includes('maldives') || t.includes('beach')){
+        b.textContent = 'Beach mode! 4D/3N with speedboat transfers works great. Want private villa or budget island?';
+      } else {
+        b.textContent = 'Sweet. Tell me days + month + rough budget and I’ll shape a mini-plan.';
+      }
+      chatBody.appendChild(b);
+      chatBody.scrollTop = chatBody.scrollHeight;
+    };
+  </script>
 </body>
 </html>

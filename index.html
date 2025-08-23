@@ -1,245 +1,545 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>GlobeGenie - Explore the World</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>GlobeGenie — Your Journey, Your Story</title>
+  <!-- Leaflet (for map) -->
+  <link
+    rel="stylesheet"
+    href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+    integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+    crossorigin=""
+  />
+  <script
+    src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+    integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
+    crossorigin=""
+  ></script>
+  <!-- Base styles -->
   <style>
-    body {
-      margin: 0;
-      font-family: Arial, sans-serif;
-      background: #f9f9f9;
-      color: #333;
+    :root{
+      --brand:#0d1b2a;
+      --brand-2:#16324f;
+      --accent:#ffcc00;
+      --bg:#f7f8fb;
+      --text:#2d2d2d;
     }
-
+    *{box-sizing:border-box}
+    html{scroll-behavior:smooth}
+    body{
+      margin:0; font-family: Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
+      color:var(--text); background:var(--bg);
+    }
     /* Navbar */
-    nav {
-      background: #0d1b2a;
-      color: white;
-      display: flex;
-      justify-content: space-between;
-      padding: 15px 40px;
-      position: sticky;
-      top: 0;
-      z-index: 1000;
+    nav{
+      position:sticky; top:0; z-index:1000;
+      background:var(--brand); color:#fff; display:flex; align-items:center; justify-content:space-between;
+      padding:14px 28px; box-shadow:0 6px 20px rgba(0,0,0,.15);
     }
-    nav a {
-      color: white;
-      margin: 0 15px;
-      text-decoration: none;
-      font-weight: bold;
+    .logo{font-weight:800; letter-spacing:.3px}
+    .nav-links a{
+      color:#fff; text-decoration:none; margin:0 10px; font-weight:600; padding:8px 10px; border-radius:8px;
     }
-    nav a:hover {
-      color: #ffcc00;
+    .nav-links a:hover{background: rgba(255,255,255,.12)}
+    .cta-nav{background:var(--accent); color:#000 !important}
+    /* Hero */
+    .hero{
+      min-height:78vh; display:grid; place-items:center; text-align:center; padding:80px 20px;
+      background:linear-gradient(180deg, rgba(13,27,42,.92), rgba(13,27,42,.75)), 
+                  url('https://images.unsplash.com/photo-1488646953014-85cb44e25828?q=80&w=1600&auto=format&fit=crop') center/cover no-repeat;
+      color:#fff;
     }
-
-    /* Hero Section */
-    .hero {
-      height: 100vh;
-      background: url('https://images.unsplash.com/photo-1507525428034-b723cf961d3e') center/cover no-repeat;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      flex-direction: column;
-      color: white;
-      text-align: center;
+    .hero h1{font-size: clamp(32px, 4vw, 56px); margin:0 0 12px; text-shadow:0 8px 24px rgba(0,0,0,.5)}
+    .hero p{max-width:820px; margin:0 auto 24px; font-size: clamp(16px, 2.3vw, 22px); opacity:.95}
+    .btn{
+      display:inline-block; border:none; padding:14px 22px; border-radius:12px; font-weight:700; cursor:pointer;
+      background:var(--accent); color:#000; transition:transform .06s ease, box-shadow .2s ease;
+      box-shadow:0 10px 24px rgba(255,204,0,.35);
     }
-    .hero h1 {
-      font-size: 60px;
-      margin: 0;
-      text-shadow: 2px 2px 10px black;
+    .btn:hover{transform: translateY(-2px)}
+    .btn.alt{background:#fff; color:#000; box-shadow:0 10px 24px rgba(255,255,255,.2)}
+    /* Sections */
+    section{padding:68px 20px}
+    .wrap{max-width:1200px; margin:0 auto}
+    h2.section-title{
+      font-size: clamp(26px,3vw,36px); margin:0 0 18px; color:var(--brand);
     }
-    .hero p {
-      font-size: 22px;
-      margin: 15px 0;
+    p.lead{color:#5a5a5a; margin:0 0 24px}
+    /* Cards grid */
+    .grid{
+      display:grid; gap:18px; grid-template-columns: repeat(auto-fit, minmax(260px,1fr));
     }
-    .hero button {
-      background: #ffcc00;
-      color: black;
-      border: none;
-      padding: 15px 30px;
-      font-size: 18px;
-      cursor: pointer;
-      border-radius: 5px;
+    .card{
+      background:#fff; border-radius:16px; overflow:hidden; box-shadow:0 10px 30px rgba(0,0,0,.08);
+      transition: transform .12s ease;
     }
-    .hero button:hover {
-      background: #e6b800;
+    .card:hover{transform: translateY(-3px)}
+    .card img{width:100%; height:180px; object-fit:cover}
+    .card-body{padding:16px}
+    .card-body h3{margin:0 0 8px}
+    .pill{display:inline-block; padding:6px 10px; background:#eef2f7; border-radius:999px; font-size:12px; font-weight:700; color:#4b4b4b}
+    /* Map + detail drawer */
+    #indiaMap{
+      width:100%; height:520px; border-radius:16px; box-shadow:0 10px 30px rgba(0,0,0,.08); border:1px solid #e8edf3;
     }
-
-    /* Destinations */
-    .destinations {
-      padding: 60px 40px;
-      text-align: center;
+    .drawer{
+      margin-top:18px; background:#fff; border-radius:16px; box-shadow:0 10px 30px rgba(0,0,0,.08); padding:18px;
     }
-    .destinations h2 {
-      font-size: 36px;
-      margin-bottom: 30px;
+    .drawer h3{margin-top:0}
+    .chips{display:flex; flex-wrap:wrap; gap:8px; margin:10px 0}
+    .chip{background:#f1f5fb; padding:6px 10px; border-radius:999px; font-size:12px}
+    /* Compare Tool */
+    .compare-box{
+      background:#fff; border-radius:16px; box-shadow:0 10px 30px rgba(0,0,0,.08);
+      padding:18px;
     }
-    .grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-      gap: 20px;
+    .form-row{display:grid; gap:12px; grid-template-columns: repeat(5, 1fr)}
+    .form-row input, .form-row select{
+      padding:12px; border-radius:10px; border:1px solid #dfe6ef; outline:none; font-weight:600; color:#2a2a2a
     }
-    .card {
-      background: white;
-      border-radius: 10px;
-      overflow: hidden;
-      box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-      transition: 0.3s;
-    }
-    .card:hover {
-      transform: translateY(-5px);
-    }
-    .card img {
-      width: 100%;
-      height: 200px;
-      object-fit: cover;
-    }
-    .card h3 {
-      margin: 15px;
-    }
-
-    /* Packages */
-    .packages {
-      padding: 60px 40px;
-      background: #f0f0f0;
-      text-align: center;
-    }
-    .packages h2 {
-      font-size: 36px;
-      margin-bottom: 30px;
-    }
-    .package-card {
-      background: white;
-      border-radius: 10px;
-      padding: 20px;
-      box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-      transition: 0.3s;
-    }
-    .package-card:hover {
-      transform: scale(1.05);
-    }
-    .package-card h3 {
-      margin: 10px 0;
-    }
-    .package-card p {
-      color: #666;
-    }
-    .package-card button {
-      margin-top: 15px;
-      background: #0d1b2a;
-      color: white;
-      border: none;
-      padding: 10px 20px;
-      cursor: pointer;
-      border-radius: 5px;
-    }
-    .package-card button:hover {
-      background: #16324f;
-    }
-
-    /* Testimonials */
-    .testimonials {
-      padding: 60px 40px;
-      text-align: center;
-    }
-    .testimonials h2 {
-      font-size: 36px;
-      margin-bottom: 30px;
-    }
-    .testimonial {
-      background: white;
-      border-radius: 10px;
-      padding: 20px;
-      margin: 10px;
-      box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-    }
-
+    .results{margin-top:16px; overflow:auto}
+    table{width:100%; border-collapse:collapse}
+    th, td{padding:12px; border-bottom:1px solid #eef2f7; text-align:left; font-size:14px}
+    th{background:#f8fafc}
     /* Footer */
-    footer {
-      background: #0d1b2a;
-      color: white;
-      text-align: center;
-      padding: 20px;
-      margin-top: 40px;
+    footer{
+      background:var(--brand); color:#fff; text-align:center; padding:30px 16px; margin-top:40px
     }
-    footer a {
-      color: #ffcc00;
-      text-decoration: none;
-      margin: 0 10px;
+    footer a{color:var(--accent); text-decoration:none}
+    /* Floating Chatbot */
+    .chat-launch{
+      position: fixed; right:18px; bottom:18px; z-index:1200;
+      background:var(--accent); color:#000; border:none; padding:14px 18px; border-radius:999px; font-weight:800; box-shadow:0 10px 24px rgba(255,204,0,.35); cursor:pointer
     }
+    .chatbox{
+      position: fixed; right:18px; bottom:82px; width:320px; max-height:60vh; display:none; flex-direction:column;
+      background:#fff; border-radius:16px; box-shadow:0 20px 40px rgba(0,0,0,.15); overflow:hidden; z-index:1200
+    }
+    .chat-header{background:var(--brand); color:#fff; padding:10px 12px; font-weight:800; display:flex; align-items:center; justify-content:space-between}
+    .chat-messages{padding:12px; gap:10px; display:flex; flex-direction:column; overflow:auto}
+    .msg{padding:10px 12px; border-radius:12px; max-width:86%}
+    .bot{background:#eef4ff; align-self:flex-start}
+    .user{background:#eafbf0; align-self:flex-end}
+    .chat-input{display:flex; border-top:1px solid #eef2f7}
+    .chat-input input{flex:1; padding:12px; border:none; outline:none}
+    .chat-input button{border:none; background:var(--accent); padding:12px 16px; font-weight:800; cursor:pointer}
+    /* Utility */
+    .spacer{height:10px}
   </style>
 </head>
 <body>
-  <!-- Navbar -->
+  <!-- NAVBAR -->
   <nav>
-    <div class="logo"><h2>GlobeGenie</h2></div>
-    <div>
-      <a href="#">Home</a>
-      <a href="#">Destinations</a>
-      <a href="#">Blog</a>
-      <a href="#">Contact</a>
+    <div class="logo">GlobeGenie</div>
+    <div class="nav-links">
+      <a href="#home">Home</a>
+      <a href="#maldives">Maldives</a>
+      <a href="#india">India Map</a>
+      <a href="#packages">Packages</a>
+      <a href="#compare" class="cta-nav">Compare Prices</a>
+      <a href="#blog">Blog</a>
+      <a href="#contact">Contact</a>
     </div>
   </nav>
 
-  <!-- Hero Section -->
-  <section class="hero">
-    <h1>Explore the World with GlobeGenie</h1>
-    <p>Your dream destinations are just a click away.</p>
-    <button>Start Your Journey</button>
-  </section>
+  <!-- HERO -->
+  <header id="home" class="hero">
+    <div class="wrap">
+      <h1>Travel isn’t just about places — it’s your next story.</h1>
+      <p>I keep it bold, clear, and personal. Tell me your vibe and I’ll craft a journey that actually feels like you. No fluff — just sleek plans, clean prices, and memories you’ll brag about.</p>
+      <div class="spacer"></div>
+      <a href="#india" class="btn">Explore India on the Map</a>
+      <a href="#packages" class="btn alt" style="margin-left:10px;">See Packages</a>
+    </div>
+  </header>
 
-  <!-- Destinations -->
-  <section class="destinations">
-    <h2>Popular Destinations</h2>
-    <div class="grid">
-      <div class="card"><img src="https://images.unsplash.com/photo-1502602898657-3e91760cbb34" alt="Paris"><h3>Paris</h3></div>
-      <div class="card"><img src="https://images.unsplash.com/photo-1507525428034-b723cf961d3e" alt="Maldives"><h3>Maldives</h3></div>
-      <div class="card"><img src="https://images.unsplash.com/photo-1506748686214-e9df14d4d9d0" alt="Bali"><h3>Bali</h3></div>
-      <div class="card"><img src="https://images.unsplash.com/photo-1500530855697-b586d89ba3ee" alt="Dubai"><h3>Dubai</h3></div>
+  <!-- MALDIVES SECTION -->
+  <section id="maldives">
+    <div class="wrap">
+      <h2 class="section-title">Maldives — Soft sunsets, bold memories</h2>
+      <p class="lead">Overwater villas, breakfast by the sea, and that "I needed this" silence. Pick your vibe — luxe or smart budget — I’ll handle the rest.</p>
+      <div class="grid">
+        <div class="card">
+          <img src="https://images.unsplash.com/photo-1500375592092-40eb2168fd21?q=80&w=1400&auto=format&fit=crop" alt="Maldives Villa">
+          <div class="card-body">
+            <h3>Luxe Overwater Escape</h3>
+            <div class="pill">5D/4N • Starts ₹95,000 pp</div>
+            <p>Private deck, glass floors, seaplane arrival — the full dream. Best for anniversaries & honeymoons.</p>
+            <button class="btn" onclick="alert('I’ll ping you the best current deals after we integrate affiliates.')">Get Best Deal</button>
+          </div>
+        </div>
+        <div class="card">
+          <img src="https://images.unsplash.com/photo-1526483360412-f4dbaf036963?q=80&w=1400&auto=format&fit=crop" alt="Maldives Budget">
+          <div class="card-body">
+            <h3>Smart Budget Island Stay</h3>
+            <div class="pill">5D/4N • Starts ₹48,000 pp</div>
+            <p>Local island boutique hotels, speedboat transfers, curated water activities without the price shock.</p>
+            <button class="btn" onclick="alert('We’ll connect Booking.com/Agoda affiliates next. For now, consider this a placeholder CTA.')">Check Availability</button>
+          </div>
+        </div>
+        <div class="card">
+          <img src="https://images.unsplash.com/photo-1512453979798-5ea266f8880c?q=80&w=1400&auto=format&fit=crop" alt="Maldives Adventure">
+          <div class="card-body">
+            <h3>Adventure & Reefs</h3>
+            <div class="pill">4D/3N • Starts ₹55,000 pp</div>
+            <p>Diving, sandbanks, dolphins. If your heart wants action with pretty sunsets, this one’s yours.</p>
+            <button class="btn" onclick="alert('Activity partners (GetYourGuide/Viator) to be plugged in soon.')">See Activities</button>
+          </div>
+        </div>
+      </div>
     </div>
   </section>
 
-  <!-- Packages -->
-  <section class="packages">
-    <h2>Travel Packages</h2>
-    <div class="grid">
-      <div class="package-card">
-        <h3>Paris Getaway</h3>
-        <p>5 Days, 4 Nights - ₹75,000</p>
-        <button>Book Now</button>
-      </div>
-      <div class="package-card">
-        <h3>Maldives Escape</h3>
-        <p>6 Days, 5 Nights - ₹95,000</p>
-        <button>Book Now</button>
-      </div>
-      <div class="package-card">
-        <h3>Bali Adventure</h3>
-        <p>7 Days, 6 Nights - ₹65,000</p>
-        <button>Book Now</button>
+  <!-- INDIA INTERACTIVE MAP -->
+  <section id="india">
+    <div class="wrap">
+      <h2 class="section-title">Tap the Map — India, your way</h2>
+      <p class="lead">Click a destination marker to see the vibe, best time to go, and a crisp day-by-day plan. Clean, fast, no overthinking.</p>
+      <div id="indiaMap"></div>
+      <div class="drawer" id="detailDrawer" style="display:none">
+        <h3 id="placeTitle">Destination</h3>
+        <div class="chips" id="tags"></div>
+        <p id="placeSummary" style="margin:8px 0 14px"></p>
+        <div id="itinerary"></div>
+        <div class="spacer"></div>
+        <button class="btn" onclick="document.getElementById('compare').scrollIntoView({behavior:'smooth'})">Compare Prices for this trip</button>
       </div>
     </div>
   </section>
 
-  <!-- Testimonials -->
-  <section class="testimonials">
-    <h2>What Our Travelers Say</h2>
-    <div class="grid">
-      <div class="testimonial">“Best travel experience of my life! GlobeGenie made it hassle-free.” - Ananya</div>
-      <div class="testimonial">“Affordable packages and amazing destinations.” - Rohan</div>
-      <div class="testimonial">“They took care of everything. Highly recommend GlobeGenie!” - Meera</div>
+  <!-- PACKAGES -->
+  <section id="packages">
+    <div class="wrap">
+      <h2 class="section-title">Handpicked, curated, unforgettable</h2>
+      <p class="lead">From quick breathers to big adventures — pick your vibe and I’ll lock the logistics.</p>
+      <div class="grid" id="packageGrid">
+        <!-- Populated by JS for easy future updates -->
+      </div>
     </div>
   </section>
 
-  <!-- Footer -->
+  <!-- PRICE COMPARISON -->
+  <section id="compare">
+    <div class="wrap">
+      <h2 class="section-title">Compare Prices — Flights • Trains • Stays</h2>
+      <p class="lead">Enter your route and dates. I’ll show you sample results now — real-time APIs plug in next.</p>
+      <div class="compare-box">
+        <div class="form-row">
+          <input id="from" placeholder="From (e.g., Delhi)" />
+          <input id="to" placeholder="To (e.g., Goa)" />
+          <input id="date" type="date"/>
+          <select id="mode">
+            <option value="any">Any</option>
+            <option value="flight">Flights</option>
+            <option value="train">Trains</option>
+            <option value="stay">Stays</option>
+          </select>
+          <button class="btn" onclick="runCompare()">Find Deals</button>
+        </div>
+        <div class="results">
+          <table id="resultsTable">
+            <thead>
+              <tr><th>Type</th><th>Provider</th><th>Route</th><th>Date</th><th>Price (₹)</th><th>Notes</th></tr>
+            </thead>
+            <tbody><!-- JS fills --></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- BLOG (placeholder links) -->
+  <section id="blog">
+    <div class="wrap">
+      <h2 class="section-title">Stories from the road, lessons from the sky</h2>
+      <p class="lead">No Wikipedia vibes. Just real tips, raw stories, and smart hacks — in my voice.</p>
+      <div class="grid">
+        <div class="card">
+          <img src="https://images.unsplash.com/photo-1512453979798-5ea266f8880c?q=80&w=1400&auto=format&fit=crop" alt="">
+          <div class="card-body">
+            <h3>Best Time to Maldives (2025)</h3>
+            <p>Weather, costs, and how to beat the rush — the clean way.</p>
+            <a class="pill" href="#" onclick="alert('Blog engine coming soon. For now, connect to /blog/maldives.html later.')">Read</a>
+          </div>
+        </div>
+        <div class="card">
+          <img src="https://images.unsplash.com/photo-1563720223185-11003d516935?q=80&w=1400&auto=format&fit=crop" alt="">
+          <div class="card-body">
+            <h3>Himachal on a Calm Budget</h3>
+            <p>Where to slow down, where to spend, and what to skip.</p>
+            <a class="pill" href="#" onclick="alert('Blog link placeholder')">Read</a>
+          </div>
+        </div>
+        <div class="card">
+          <img src="https://images.unsplash.com/photo-1548013146-72479768bada?q=80&w=1400&auto=format&fit=crop" alt="">
+          <div class="card-body">
+            <h3>Goa Beyond Baga</h3>
+            <p>Quiet beaches, real cafés, local runs — not the tourist playlist.</p>
+            <a class="pill" href="#" onclick="alert('Blog link placeholder')">Read</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CONTACT -->
+  <section id="contact">
+    <div class="wrap">
+      <h2 class="section-title">Let’s talk travel like friends do</h2>
+      <p class="lead">Tell me your vibe, your dates, your budget — I’ll do the rest.</p>
+      <div class="compare-box">
+        <div class="form-row" style="grid-template-columns: repeat(2, 1fr) 2fr 1fr;">
+          <input id="cname" placeholder="Your name"/>
+          <input id="cemail" placeholder="Email or WhatsApp"/>
+          <input id="cmsg" placeholder="Tell me where you want to go…"/>
+          <button class="btn" onclick="alert('Message captured locally. We’ll wire this to email/Google Form next.')">Send</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
   <footer>
-    <p>© 2025 GlobeGenie. All rights reserved.</p>
-    <p>
-      <a href="#">Facebook</a> | 
-      <a href="#">Instagram</a> | 
-      <a href="#">Twitter</a>
-    </p>
+    <div class="wrap">
+      © <span id="year"></span> GlobeGenie • Built with love and clean plans •
+      <a href="#home">Back to top</a>
+    </div>
   </footer>
+
+  <!-- FLOATING CHATBOT -->
+  <button class="chat-launch" id="chatLaunch">Chat with Genie 🤖</button>
+  <div class="chatbox" id="chatBox">
+    <div class="chat-header">
+      <span>Genie • AI Travel Buddy</span>
+      <button style="background:none;border:none;color:#fff;font-weight:800;cursor:pointer" onclick="toggleChat()">✕</button>
+    </div>
+    <div class="chat-messages" id="chatMessages">
+      <div class="msg bot">
+        Hey wanderer 👋 Tell me your vibe — mountains, beaches, or a city that never sleeps?
+      </div>
+    </div>
+    <div class="chat-input">
+      <input id="chatInput" placeholder="Type here… e.g., Goa in October under 20k"/>
+      <button onclick="sendMsg()">Send</button>
+    </div>
+  </div>
+
+  <!-- SCRIPT: DATA + LOGIC -->
+  <script>
+    // Year in footer
+    document.getElementById('year').textContent = new Date().getFullYear();
+
+    /* =========================================
+       INDIA MAP — markers with info & itinerary
+    ============================================*/
+    // Simple dataset (expand anytime)
+    const indiaDestinations = [
+      {
+        id:'goa', state:'Goa', coords:[15.2993, 74.1240],
+        tags:['Beaches','Cafés','Sunsets'],
+        summary:"Slow mornings, clean cafés, ocean drives. Skip the rush, keep the vibe.",
+        itinerary:[
+          "Day 1 — Benaulim + Colva: Soft beach day, sunset shack dinner.",
+          "Day 2 — Old Goa + Fontainhas: Heritage walk, local bakery, evening at Miramar.",
+          "Day 3 — South Goa drive: Agonda, Palolem, hidden coves."
+        ]
+      },
+      {
+        id:'himachal', state:'Himachal Pradesh', coords:[31.1048,77.1734],
+        tags:['Mountains','Cafés','Workations'],
+        summary:"Bring a hoodie and a book. This one’s for calm hearts and long views.",
+        itinerary:[
+          "Day 1 — Shimla Ridge + Mall Road + hot chai spots.",
+          "Day 2 — Mashobra hike, picnic, sunset viewpoint.",
+          "Day 3 — Kufri forest trail + slow café evening."
+        ]
+      },
+      {
+        id:'rajasthan', state:'Rajasthan', coords:[26.9124,75.7873],
+        tags:['Palaces','Culture','Food'],
+        summary:"Havelis, thalis, and streets that tell stories. Royal, but still raw.",
+        itinerary:[
+          "Day 1 — Jaipur: City Palace, Hawa Mahal, local kachori trail.",
+          "Day 2 — Amer Fort + stepwell + evening at Nahargarh.",
+          "Day 3 — Pushkar or Ajmer day trip."
+        ]
+      },
+      {
+        id:'kerala', state:'Kerala', coords:[9.9312,76.2673],
+        tags:['Backwaters','Green','Ayurveda'],
+        summary:"Float through alleys of water and coconut shade. Peace comes standard.",
+        itinerary:[
+          "Day 1 — Kochi Fort area + Chinese nets + cafés.",
+          "Day 2 — Alleppey houseboat day & night.",
+          "Day 3 — Munnar tea gardens + viewpoints."
+        ]
+      },
+      {
+        id:'maharashtra', state:'Maharashtra', coords:[19.0760,72.8777],
+        tags:['City Life','Coast','Fort Treks'],
+        summary:"Mumbai’s chaos, Konkan’s calm — two playlists in one state.",
+        itinerary:[
+          "Day 1 — Marine Drive + Colaba + night bites.",
+          "Day 2 — Alibaug quick escape + beach time.",
+          "Day 3 — Lonavala/Karla caves + monsoon views."
+        ]
+      }
+    ];
+
+    // Initialize map
+    const map = L.map('indiaMap',{scrollWheelZoom:false}).setView([22.5937, 78.9629],5);
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{
+      maxZoom: 19, attribution: '&copy; OpenStreetMap'
+    }).addTo(map);
+
+    const drawer = document.getElementById('detailDrawer');
+    const placeTitle = document.getElementById('placeTitle');
+    const placeSummary = document.getElementById('placeSummary');
+    const tagsBox = document.getElementById('tags');
+    const itineraryBox = document.getElementById('itinerary');
+
+    indiaDestinations.forEach(d=>{
+      const marker = L.marker(d.coords).addTo(map).bindPopup(`<b>${d.state}</b><br/>Tap for details`);
+      marker.on('click', ()=>{
+        renderDetail(d);
+      });
+    });
+
+    function renderDetail(d){
+      placeTitle.textContent = d.state;
+      placeSummary.textContent = d.summary;
+      tagsBox.innerHTML = d.tags.map(t=>`<span class="chip">${t}</span>`).join('');
+      itineraryBox.innerHTML = `
+        <h4 style="margin:10px 0 8px">Sample Itinerary</h4>
+        <ul style="margin:0; padding-left:18px">
+          ${d.itinerary.map(i=>`<li>${i}</li>`).join('')}
+        </ul>
+      `;
+      drawer.style.display = 'block';
+    }
+
+    /* =========================================
+       PACKAGES — easy to extend
+    ============================================*/
+    const packages = [
+      {title:'Goa Calm Break', days:'3D/2N', price:18000, img:'https://images.unsplash.com/photo-1548013146-72479768bada?q=80&w=1400&auto=format&fit=crop', tag:'Beach'},
+      {title:'Himachal Slow Trip', days:'4D/3N', price:22000, img:'https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?q=80&w=1400&auto=format&fit=crop', tag:'Mountains'},
+      {title:'Jaipur Royal Weekend', days:'3D/2N', price:16000, img:'https://images.unsplash.com/photo-1548013146-72479768bada?q=80&w=1400&auto=format&fit=crop', tag:'Culture'},
+      {title:'Kerala Backwaters', days:'5D/4N', price:32000, img:'https://images.unsplash.com/photo-1512453979798-5ea266f8880c?q=80&w=1400&auto=format&fit=crop', tag:'Backwaters'}
+    ];
+    const grid = document.getElementById('packageGrid');
+    grid.innerHTML = packages.map(p=>`
+      <div class="card">
+        <img src="${p.img}" alt="${p.title}"/>
+        <div class="card-body">
+          <h3>${p.title} <span class="pill">${p.days}</span></h3>
+          <p>Starts at <b>₹${p.price.toLocaleString()}</b>. Hotels, local transfers, and clean plans included.</p>
+          <button class="btn" onclick="document.getElementById('compare').scrollIntoView({behavior:'smooth'})">Check Deals</button>
+        </div>
+      </div>
+    `).join('');
+
+    /* =========================================
+       PRICE COMPARISON — mock data + filtering
+       (Plug real APIs later: Skyscanner, Amadeus,
+        IRCTC, Booking/Agoda)
+    ============================================*/
+    const sampleDeals = [
+      // Flights
+      {type:'flight', provider:'IndiGo', from:'Delhi', to:'Goa', date:'2025-09-12', price:6599, note:'Non-stop • 2h40m'},
+      {type:'flight', provider:'Vistara', from:'Mumbai', to:'Kochi', date:'2025-09-14', price:7299, note:'1 stop • 4h10m'},
+      {type:'flight', provider:'Air India', from:'Delhi', to:'Jaipur', date:'2025-09-10', price:2899, note:'Non-stop • 1h'},
+      // Trains
+      {type:'train', provider:'IRCTC', from:'Delhi', to:'Shimla', date:'2025-09-12', price:850, note:'Kalka–Shimla toy train'},
+      {type:'train', provider:'IRCTC', from:'Mumbai', to:'Goa', date:'2025-09-12', price:1350, note:'Overnight chair car'},
+      // Stays
+      {type:'stay', provider:'Hotel: Benaulim Breeze', from:'Goa', to:'Goa', date:'2025-09-12', price:2800, note:'Per night • Breakfast'},
+      {type:'stay', provider:'Homestay: Mashobra Peak', from:'Shimla', to:'Shimla', date:'2025-09-13', price:2400, note:'Per night • Mountain view'},
+      {type:'stay', provider:'Houseboat: Alleppey', from:'Kochi', to:'Alleppey', date:'2025-09-14', price:7200, note:'Per night • Private'}
+    ];
+
+    function runCompare(){
+      const from = (document.getElementById('from').value || '').trim().toLowerCase();
+      const to   = (document.getElementById('to').value || '').trim().toLowerCase();
+      const date = document.getElementById('date').value;
+      const mode = document.getElementById('mode').value;
+
+      let rows = sampleDeals.filter(d=>{
+        const f = !from || d.from.toLowerCase().includes(from);
+        const t = !to   || d.to.toLowerCase().includes(to);
+        const dt= !date || d.date === date;
+        const m = mode==='any' || d.type===mode;
+        return f && t && dt && m;
+      }).sort((a,b)=>a.price-b.price);
+
+      const tbody = document.querySelector('#resultsTable tbody');
+      tbody.innerHTML = rows.length ? rows.map(r=>`
+        <tr>
+          <td>${r.type}</td>
+          <td>${r.provider}</td>
+          <td>${r.from} → ${r.to}</td>
+          <td>${r.date}</td>
+          <td>₹${r.price.toLocaleString()}</td>
+          <td>${r.note}</td>
+        </tr>
+      `).join('') : `<tr><td colspan="6">No sample deals matched. Try removing a filter.</td></tr>`;
+    }
+
+    /* =========================================
+       SIMPLE AI CHATBOT (front-end logic)
+       - Talks in your voice
+       - Upgrade path: replace reply() with API call
+    ============================================*/
+    function toggleChat(){
+      const box = document.getElementById('chatBox');
+      box.style.display = (box.style.display==='flex'?'none':'flex');
+    }
+    document.getElementById('chatLaunch').addEventListener('click', toggleChat);
+
+    const chatMessages = document.getElementById('chatMessages');
+    function addMsg(text, who='bot'){
+      const div = document.createElement('div');
+      div.className = `msg ${who}`;
+      div.textContent = text;
+      chatMessages.appendChild(div);
+      chatMessages.scrollTop = chatMessages.scrollHeight;
+    }
+    function sendMsg(){
+      const input = document.getElementById('chatInput');
+      const text = input.value.trim();
+      if(!text) return;
+      addMsg(text,'user');
+      input.value='';
+      setTimeout(()=> addMsg(reply(text),'bot'), 350);
+    }
+    // Your-voice replies (keyword routing)
+    function reply(q){
+      const s = q.toLowerCase();
+      if(s.includes('goa')){
+        return "Goa is a mood, not a place. Best Oct–Mar. Want a calm 3D/2N plan with cafés + hidden beaches?";
+      }
+      if(s.includes('maldives')){
+        return "Maldives is pure softness. Luxe or smart budget? I’ll map stays + seaplane/speedboat with clean pricing.";
+      }
+      if(s.includes('himachal') || s.includes('mountain') || s.includes('shimla')){
+        return "Mountains for the soul. Think Himachal: Mashobra hikes, café sunsets, slow mornings. Dates + budget?";
+      }
+      if(s.includes('compare') || s.includes('price') || s.includes('flight') || s.includes('train') || s.includes('stay')){
+        return "Got it. Jump to Compare Prices below — enter route & dates. I’ll surface clean options. APIs plug in next.";
+      }
+      if(s.includes('hi')||s.includes('hello')){
+        return "Hey wanderer 👋 Tell me your vibe — beaches, mountains, or a city that never sleeps?";
+      }
+      return "Bold and simple: tell me the destination + dates + budget. I’ll shape a plan that actually feels like you.";
+    }
+
+    /* =========================================
+       UPGRADE NOTES (when you're ready)
+       - Replace reply() by calling a backend (OpenAI/Gemini/Rasa)
+       - Swap sampleDeals with live APIs (Skyscanner/Amadeus/IRCTC/Booking)
+       - Add more indiaDestinations entries (states/cities)
+    ============================================*/
+  </script>
 </body>
 </html>

@@ -1,595 +1,225 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>GlobeGenie — Let’s get your trip started</title>
-  <meta name="description" content="GlobeGenie — Minimalist travel planning, interactive India map, AI travel assistant and price comparisons for flights, trains and stays." />
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;800&display=swap" rel="stylesheet">
-
-  <!-- Leaflet CSS -->
-  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
-
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Travel Co.</title>
   <style>
-    :root{
-      --navy: #001f3f;
-      --yellow: #ffd700;
-      --muted: #6b7280;
-      --bg: #f7f9fb;
-      --card: #fff;
-      --radius: 12px;
-      --maxw: 1120px;
-      --shadow: 0 10px 28px rgba(2,6,23,0.08);
-    }
-    *{box-sizing:border-box}
-    html,body{height:100%}
-    body{
-      font-family: "Poppins", system-ui, -apple-system, "Segoe UI", Roboto, Arial;
-      background:var(--bg);
-      color:var(--navy);
-      margin:0;
-      -webkit-font-smoothing:antialiased;
-      -moz-osx-font-smoothing:grayscale;
-      line-height:1.5;
-    }
+    /* Global Styles */
+    * {margin:0; padding:0; box-sizing:border-box; font-family:'Arial',sans-serif;}
+    body {background:#f4f4f4; color:#333;}
+    header {background:#001f3f; color:#fff; display:flex; justify-content:space-between; align-items:center; padding:15px 30px; position:fixed; top:0; width:100%; z-index:999;}
+    header nav a {color:#fff; margin:0 15px; text-decoration:none; font-weight:bold;}
+    header nav a:hover {color:#FFD700;}
+    .hero {height:100vh; background:url('https://images.unsplash.com/photo-1507525428034-b723cf961d3e') center/cover no-repeat; display:flex; align-items:center; justify-content:center; color:#fff; text-align:center; padding:20px;}
+    .hero h1 {font-size:50px; text-shadow:2px 2px 10px #000;}
+    .btn {background:#FFD700; color:#001f3f; padding:10px 20px; border:none; cursor:pointer; font-size:18px; border-radius:5px; transition:0.3s;}
+    .btn:hover {background:#e6c200;}
 
-    /* NAV */
-    header{background:var(--navy);color:#fff;position:sticky;top:0;z-index:60}
-    .nav-inner{max-width:var(--maxw);margin:0 auto;display:flex;align-items:center;justify-content:space-between;padding:14px}
-    .brand{font-weight:800;font-size:18px}
-    .brand .accent{color:var(--yellow)}
-    .nav-links{display:flex;gap:18px}
-    .nav-links a{color:rgba(255,255,255,0.9);text-decoration:none;font-weight:600}
-    .nav-links a:hover{color:var(--yellow)}
-    .mobile-toggle{display:none;background:transparent;border:0;color:var(--yellow);font-size:22px}
+    section {padding:80px 20px;}
+    h2 {text-align:center; margin-bottom:30px; font-size:32px; color:#001f3f;}
 
-    /* HERO */
-    .hero{padding:64px 18px;text-align:center;background:linear-gradient(180deg,var(--navy),#04243f);color:#fff}
-    .hero .wrap{max-width:900px;margin:0 auto}
-    .hero h1{font-size:clamp(26px,4vw,44px);font-weight:800;margin-bottom:10px}
-    .hero p{color:rgba(255,255,255,0.9);margin-bottom:18px}
-    .hero .cta{display:flex;gap:12px;justify-content:center;flex-wrap:wrap}
-    .btn{border-radius:999px;padding:10px 16px;font-weight:700;cursor:pointer;border:0}
-    .btn-primary{background:var(--yellow);color:var(--navy)}
-    .btn-ghost{background:transparent;color:#fff;border:1px solid rgba(255,255,255,0.12)}
+    /* Booking Form */
+    .booking {max-width:600px; margin:0 auto; background:#fff; padding:20px; border-radius:8px; box-shadow:0 4px 10px rgba(0,0,0,0.1);}
+    .booking input, .booking select {width:100%; padding:10px; margin:10px 0; border:1px solid #ccc; border-radius:4px;}
+    
+    /* Comparison Table */
+    table {width:90%; margin:20px auto; border-collapse:collapse;}
+    table th, table td {border:1px solid #ddd; padding:10px; text-align:center;}
+    table th {background:#001f3f; color:#fff;}
 
-    /* LAYOUT */
-    .section{padding:42px 18px}
-    .wrap{max-width:var(--maxw);margin:0 auto}
-    h2.section-title{text-align:left;font-size:20px;margin-bottom:6px;font-weight:800}
-    p.muted{color:var(--muted);margin-bottom:16px}
+    /* Map */
+    #map {height:400px; width:90%; margin:0 auto; border-radius:8px;}
 
-    /* DEST + MAP */
-    .dest-layout{display:grid;grid-template-columns:1fr 360px;gap:18px;align-items:start}
-    .map-card{background:var(--card);border-radius:var(--radius);overflow:hidden;box-shadow:var(--shadow);height:480px}
-    #map{width:100%;height:100%}
-    .cards{display:flex;flex-direction:column;gap:12px}
-    .dest-card{display:flex;gap:10px;background:var(--card);border-radius:10px;padding:10px;align-items:center;box-shadow:0 6px 18px rgba(2,6,23,0.04);cursor:pointer}
-    .dest-card img{width:84px;height:64px;object-fit:cover;border-radius:8px;flex-shrink:0}
-    .dest-card h4{margin:0;font-size:14px}
-    .dest-card p{margin:2px 0 0;font-size:13px;color:var(--muted)}
+    /* Blogs */
+    .blogs {display:flex; flex-wrap:wrap; justify-content:center; gap:20px;}
+    .blog-card {background:#fff; width:300px; border-radius:8px; overflow:hidden; box-shadow:0 4px 10px rgba(0,0,0,0.1); cursor:pointer; transition:0.3s;}
+    .blog-card img {width:100%; height:200px; object-fit:cover;}
+    .blog-card h3 {padding:15px;}
+    .blog-card:hover {transform:scale(1.03);}
+    
+    /* Newsletter */
+    .newsletter {text-align:center;}
+    .newsletter input[type="email"] {padding:10px; width:250px; margin:10px; border:1px solid #ccc;}
+    
+    /* Footer */
+    footer {background:#001f3f; color:#fff; text-align:center; padding:20px; margin-top:40px;}
 
-    /* DRAWER */
-    .drawer{position:fixed;right:18px;bottom:120px;width:360px;background:var(--card);border-radius:12px;padding:14px;box-shadow:var(--shadow);z-index:80;display:none}
-    .drawer .close{background:transparent;border:0;color:var(--muted);float:right;font-size:18px}
-    .tag{display:inline-block;background:#f0f7ff;color:var(--navy);padding:6px 10px;border-radius:999px;font-weight:700;font-size:12px;margin-right:6px}
+    /* AI Chatbot Widget */
+    .chatbot {position:fixed; bottom:20px; right:20px; background:#001f3f; color:#fff; padding:15px; border-radius:8px; width:300px; display:none; flex-direction:column;}
+    .chatbot-header {display:flex; justify-content:space-between; align-items:center;}
+    .chatbot-header h4 {margin:0;}
+    .chatbot-messages {height:200px; overflow-y:auto; margin:10px 0; background:#fff; color:#000; padding:10px; border-radius:4px;}
+    .chatbot input {padding:10px; width:calc(100% - 60px);}
+    .chatbot button {padding:10px;}
+    .chatbot-toggle {position:fixed; bottom:20px; right:20px; background:#FFD700; color:#001f3f; border:none; border-radius:50%; width:60px; height:60px; font-size:24px; cursor:pointer;}
 
-    /* COMPARE */
-    .compare {background:var(--card);padding:16px;border-radius:12px;box-shadow:var(--shadow);margin-top:16px}
-    .compare-row{display:flex;gap:8px;flex-wrap:wrap}
-    .compare-row input, .compare-row select{padding:10px;border-radius:8px;border:1px solid #e6eef8;min-width:120px}
-    .results-table{width:100%;border-collapse:collapse;margin-top:12px}
-    .results-table th, .results-table td{padding:10px;border-bottom:1px solid #f1f5f9;text-align:left;font-size:14px}
-    .chart-canvas{width:100%;height:160px;margin-top:12px;background:#fff;border-radius:8px;padding:8px; box-shadow: inset 0 1px 0 rgba(0,0,0,0.02)}
-
-    /* BLOGS */
-    .blog-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:16px;margin-top:10px}
-    .blog-card{background:var(--card);border-radius:12px;overflow:hidden;box-shadow:var(--shadow);display:flex;flex-direction:column}
-    .blog-card img{width:100%;height:160px;object-fit:cover}
-    .blog-content{padding:12px}
-    .blog-content h3{margin-bottom:8px}
-    .excerpt{color:var(--muted);font-size:14px;line-height:1.6}
-
-    /* CHAT */
-    .chat-fab{position:fixed;right:18px;bottom:18px;width:56px;height:56px;border-radius:999px;background:var(--yellow);color:var(--navy);display:flex;align-items:center;justify-content:center;font-weight:800;box-shadow:var(--shadow);border:0;z-index:90;cursor:pointer}
-    .chatbox{position:fixed;right:18px;bottom:86px;width:340px;border-radius:12px;background:var(--card);box-shadow:var(--shadow);z-index:92;display:none;flex-direction:column;overflow:hidden}
-    .chat-header{background:var(--navy);color:#fff;padding:10px 12px;display:flex;justify-content:space-between;align-items:center}
-    .chat-body{padding:10px;height:220px;overflow:auto;background:#f8fafc}
-    .bubble{display:inline-block;padding:8px 10px;border-radius:12px;margin:6px 0;max-width:80%}
-    .bubble.bot{background:#eef2ff;color:var(--navy)}
-    .bubble.user{background:var(--navy);color:#fff;margin-left:auto}
-    .chat-input{display:flex;gap:8px;padding:10px;border-top:1px solid #eef3fb}
-
-    /* FOOTER */
-    footer{margin-top:28px;background:transparent;padding:24px 18px;text-align:center;color:var(--muted)}
-
-    /* RESPONSIVE */
-    @media(max-width:1020px){
-      .dest-layout{grid-template-columns:1fr}
-      .map-card{height:420px}
-    }
-    @media(max-width:720px){
-      .nav-links{display:none}
-      .mobile-toggle{display:block}
-      .hero{padding:40px 12px}
-      .drawer{right:12px;left:12px;width:auto}
-      .chatbox{right:12px;left:12px;width:auto}
+    @media(max-width:768px){
+      header nav {display:none;}
+      .hero h1 {font-size:32px;}
+      .blogs {flex-direction:column; align-items:center;}
     }
   </style>
 </head>
 <body>
-
-  <!-- NAV -->
+  <!-- Header -->
   <header>
-    <div class="nav-inner">
-      <div class="brand"><span class="accent brand-accent">Globe</span>Genie</div>
-      <nav class="nav-links">
-        <a href="#hero">Home</a>
-        <a href="#destinations">Destinations</a>
-        <a href="#compare-section">Compare</a>
-        <a href="#blogs">Blog</a>
-        <a href="#contact">Contact</a>
-      </nav>
-      <button class="mobile-toggle" id="mobileToggle" aria-label="menu">☰</button>
-    </div>
+    <h1>Travel Co.</h1>
+    <nav>
+      <a href="#booking">Book</a>
+      <a href="#compare">Compare</a>
+      <a href="#map-section">Map</a>
+      <a href="#blogs">Blogs</a>
+      <a href="#newsletter">Newsletter</a>
+    </nav>
   </header>
 
-  <!-- HERO -->
-  <section id="hero" class="hero">
-    <div class="wrap">
-      <h1 class="hero-title">Let’s get your trip started!</h1>
-      <p class="hero-sub">Tell GlobeGenie your vibe — mountains, beaches or a city that never sleeps — and I’ll craft a crisp plan that feels like you.</p>
-      <div class="hero cta">
-        <button class="btn btn-primary" onclick="document.getElementById('destinations').scrollIntoView({behavior:'smooth'})">Explore North India</button>
-        <button class="btn btn-ghost" onclick="document.getElementById('blogs').scrollIntoView({behavior:'smooth'})">Read the Blog</button>
+  <!-- Hero Section -->
+  <section class="hero">
+    <div>
+      <h1>Explore Incredible India</h1>
+      <button class="btn" onclick="document.getElementById('booking').scrollIntoView()">Plan Your Trip</button>
+    </div>
+  </section>
+
+  <!-- Booking Form -->
+  <section id="booking">
+    <h2>Book Your Journey</h2>
+    <form class="booking" action="https://formspree.io/f/YOUR_FORM_ID" method="POST">
+      <input type="text" name="name" placeholder="Your Name" required>
+      <input type="email" name="email" placeholder="Email" required>
+      <select name="destination" required>
+        <option value="">Select Destination</option>
+        <option>Goa</option>
+        <option>Jaipur</option>
+        <option>Kerala</option>
+      </select>
+      <input type="date" name="date" required>
+      <button type="submit" class="btn">Book Now</button>
+    </form>
+  </section>
+
+  <!-- Price Comparison -->
+  <section id="compare">
+    <h2>Price Comparison</h2>
+    <table>
+      <tr>
+        <th>Mode</th>
+        <th>Delhi → Goa</th>
+        <th>Delhi → Jaipur</th>
+      </tr>
+      <tr>
+        <td>Flight</td>
+        <td>₹4,500</td>
+        <td>₹2,000</td>
+      </tr>
+      <tr>
+        <td>Train</td>
+        <td>₹800</td>
+        <td>₹500</td>
+      </tr>
+      <tr>
+        <td>Stay (per night)</td>
+        <td>₹2,000</td>
+        <td>₹1,500</td>
+      </tr>
+    </table>
+  </section>
+
+  <!-- Interactive Map -->
+  <section id="map-section">
+    <h2>Explore India</h2>
+    <div id="map"></div>
+  </section>
+
+  <!-- Blogs -->
+  <section id="blogs">
+    <h2>Travel Blogs</h2>
+    <div class="blogs">
+      <div class="blog-card" onclick="openBlog('Goa Adventures', 'Discover beaches and nightlife in Goa!')">
+        <img src="https://images.unsplash.com/photo-1507525428034-b723cf961d3e" alt="Goa">
+        <h3>Goa Adventures</h3>
+      </div>
+      <div class="blog-card" onclick="openBlog('Jaipur Diaries', 'Explore palaces and culture in Jaipur!')">
+        <img src="https://images.unsplash.com/photo-1548013146-72479768bada" alt="Jaipur">
+        <h3>Jaipur Diaries</h3>
       </div>
     </div>
   </section>
 
-  <!-- DESTINATIONS (MAP + CARDS) -->
-  <section id="destinations" class="section">
-    <div class="wrap">
-      <h2 class="section-title">North India — Tap & Explore</h2>
-      <p class="muted">Click a pin or a card. You'll get a short 3-day sample plan and quick tips.</p>
-
-      <div class="dest-layout">
-        <!-- Map -->
-        <div class="map-card">
-          <div id="map"></div>
-        </div>
-
-        <!-- Cards -->
-        <aside class="cards">
-          <!-- these images are sized small via CSS -->
-          <div class="dest-card" data-name="Shimla" data-lat="31.1048" data-lng="77.1734">
-            <img src="https://images.unsplash.com/photo-1544723795-3fb6469f5b39?q=80&w=800&auto=format&fit=crop" alt="">
-            <div>
-              <h4>Shimla</h4>
-              <p class="muted">Colonial charm, ridge walks.</p>
-            </div>
-          </div>
-
-          <div class="dest-card" data-name="Manali" data-lat="32.2396" data-lng="77.1887">
-            <img src="https://images.unsplash.com/photo-1603262110263-fb0112e7cc33?q=80&w=800&auto=format&fit=crop" alt="">
-            <div>
-              <h4>Manali</h4>
-              <p class="muted">Solang Valley & old-town cafés.</p>
-            </div>
-          </div>
-
-          <div class="dest-card" data-name="Rishikesh" data-lat="30.0869" data-lng="78.2676">
-            <img src="https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?q=80&w=800&auto=format&fit=crop" alt="">
-            <div>
-              <h4>Rishikesh</h4>
-              <p class="muted">Ganga aarti, rafting & yoga.</p>
-            </div>
-          </div>
-
-          <div class="dest-card" data-name="Jaipur" data-lat="26.9124" data-lng="75.7873">
-            <img src="https://images.unsplash.com/photo-1581798269146-19f545139ebe?q=80&w=800&auto=format&fit=crop" alt="">
-            <div>
-              <h4>Jaipur</h4>
-              <p class="muted">Palaces, bazaars, rooftop dinners.</p>
-            </div>
-          </div>
-
-        </aside>
-      </div>
-
-      <!-- Drawer for details -->
-      <div id="detailDrawer" class="drawer" aria-hidden="true">
-        <button class="close" id="closeDrawer" aria-label="close">✕</button>
-        <h3 id="drawerTitle">Destination</h3>
-        <div id="drawerTags"></div>
-        <p id="drawerSummary" class="muted"></p>
-        <div id="drawerItinerary"></div>
-        <div style="margin-top:12px;display:flex;gap:8px;">
-          <a class="btn btn-primary" href="#contact">Plan this Trip</a>
-          <button id="compareForPlace" class="btn btn-ghost">Compare Prices</button>
-        </div>
-      </div>
-
-    </div>
+  <!-- Newsletter -->
+  <section id="newsletter" class="newsletter">
+    <h2>Subscribe for Updates</h2>
+    <input type="email" placeholder="Enter your email">
+    <button class="btn">Subscribe</button>
   </section>
 
-  <!-- COMPARE SECTION -->
-  <section id="compare-section" class="section">
-    <div class="wrap">
-      <h2 class="section-title">Compare Prices — Flights • Trains • Stays</h2>
-      <p class="muted">Enter route and date. This is a working mock now — we’ll plug live APIs next.</p>
-
-      <div class="compare">
-        <div class="compare-row">
-          <input id="cmpFrom" placeholder="From (e.g., Delhi)" />
-          <input id="cmpTo" placeholder="To (e.g., Manali)" />
-          <input id="cmpDate" type="date" />
-          <select id="cmpMode">
-            <option value="any">Any</option>
-            <option value="flight">Flights</option>
-            <option value="train">Trains</option>
-            <option value="stay">Stays</option>
-          </select>
-          <button id="runCompareBtn" class="btn btn-primary">Compare</button>
-        </div>
-
-        <table class="results-table" id="resultsTable">
-          <thead>
-            <tr><th>Type</th><th>Provider</th><th>Route</th><th>Date</th><th>Price (₹)</th><th>Notes</th></tr>
-          </thead>
-          <tbody id="resultsBody">
-            <tr><td colspan="6" class="muted">No results yet — try the example: From=Delhi, To=Manali, Date=2025-09-12</td></tr>
-          </tbody>
-        </table>
-
-        <div class="chart-canvas" aria-hidden="false">
-          <canvas id="priceChart" width="600" height="160" style="max-width:100%;"></canvas>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- BLOGS (full first blog included below) -->
-  <section id="blogs" class="section bg">
-    <div class="wrap">
-      <h2 class="section-title">Travel Stories & Tips</h2>
-      <div class="blog-grid">
-        <article class="blog-card">
-          <img src="https://images.unsplash.com/photo-1506744038136-46273834b3fb?q=80&w=1200&auto=format&fit=crop" alt="">
-          <div class="blog-content">
-            <h3>I Need a Break, But I Can't Figure Out Where to Go</h3>
-            <p class="excerpt">You’re tired, you want out, but the options feel like noise. Here’s a short, human guide to pick a place, book smart, and actually enjoy the break.</p>
-            <a href="#full-blog" class="link" style="color:var(--yellow);font-weight:700">Read full →</a>
-          </div>
-        </article>
-
-        <article class="blog-card">
-          <img src="https://images.unsplash.com/photo-1526778548025-fa2f459cd5c1?q=80&w=1200&auto=format&fit=crop" alt="">
-          <div class="blog-content">
-            <h3>Top Underrated Destinations in India</h3>
-            <p class="excerpt">Five peaceful spots away from the crowds — practical tips for each.</p>
-            <a href="#" class="link" style="color:var(--yellow);font-weight:700">Read →</a>
-          </div>
-        </article>
-
-        <article class="blog-card">
-          <img src="https://images.unsplash.com/photo-1529333166437-7750a6dd5a70?q=80&w=1200&auto=format&fit=crop" alt="">
-          <div class="blog-content">
-            <h3>Plan a Trip in One Day — Yes, You Can</h3>
-            <p class="excerpt">A quick blueprint to pick, pack, and leave within 24 hours.</p>
-            <a href="#" class="link" style="color:var(--yellow);font-weight:700">Read →</a>
-          </div>
-        </article>
-      </div>
-
-      <!-- Full blog content (hidden anchor) -->
-      <div id="full-blog" style="margin-top:20px;background:var(--card);padding:18px;border-radius:10px;box-shadow:var(--shadow)">
-        <h3 style="margin-bottom:8px">I Need a Break, But I Can't Figure Out Where to Go</h3>
-        <p class="muted" style="margin-bottom:12px">A simple, human guide to choosing your next trip and booking it without the overwhelm.</p>
-
-        <article style="color:var(--muted);font-size:15px;line-height:1.65">
-          <p>There are moments when your mind whispers, “I need a break,” and your brain answers with a thousand tabs. I know that noise — it’s real. The thing that works (every single time) is this: shrink the problem down. Decide on one feeling you want: calm, curious, or chaotic joy. From there, the rest gets faster.</p>
-
-          <h4 style="color:var(--navy);margin-top:12px">Step 1 — Pick the feeling, not the place</h4>
-          <p>Mountains = quiet mornings and slow cafés. Beaches = salt, sun, reset. City = late nights and short-window discoveries. Choose the feeling first and the destination will follow.</p>
-
-          <h4 style="color:var(--navy);margin-top:12px">Step 2 — Use rules, not endless searching</h4>
-          <p>Three rules that speed things up: (1) Season rule — where’s good now? (2) Budget rule — set a top number and don’t negotiate, and (3) Time rule — how many days you have. Apply the three and you’ll have 2–3 realistic options within 15 minutes.</p>
-
-          <h4 style="color:var(--navy);margin-top:12px">Step 3 — Book the bones first</h4>
-          <p>Book transport and the first night of stay. Once that’s locked, everything else is flexible. Use trains for short regional trips and flights for farther places. For stays, pick refundable options for peace of mind.</p>
-
-          <h4 style="color:var(--navy);margin-top:12px">Step 4 — Use smart comparisons (and not just price)</h4>
-          <p>Price is important, but so is timing and convenience. A cheaper flight with long layovers can exhaust you; a slightly pricier direct option might be worth it. That’s why a quick compare of flights, trains, and stays — like the tool on this page — helps you choose what feels right, not just what’s cheap.</p>
-
-          <h4 style="color:var(--navy);margin-top:12px">Quick booking hacks</h4>
-          <ul style="color:var(--muted);margin-left:18px;margin-top:8px">
-            <li>Book mid-week for cheaper fares when possible.</li>
-            <li>Check trains for scenic overnight options — cheaper + experience.</li>
-            <li>Use homestays for authenticity and lower cost.</li>
-          </ul>
-
-          <p style="margin-top:10px">If you want, tell me your vibe and budget in the chat — I’ll give a short 3-day plan right here. No fluff, just options you can actually book.</p>
-        </article>
-      </div>
-
-    </div>
-  </section>
-
-  <!-- CONTACT -->
-  <section id="contact" class="section">
-    <div class="wrap">
-      <h2 class="section-title">Contact & Book</h2>
-      <p class="muted">Drop your dates and budget — or use the “Plan this Trip” button in the drawer.</p>
-      <form id="contactForm" style="display:grid;gap:10px;max-width:560px">
-        <input id="contactName" placeholder="Your name" required style="padding:10px;border-radius:8px;border:1px solid #e6eef8" />
-        <input id="contactEmail" placeholder="Email or WhatsApp" required style="padding:10px;border-radius:8px;border:1px solid #e6eef8" />
-        <textarea id="contactMsg" rows="4" placeholder="Where, when, budget..." style="padding:10px;border-radius:8px;border:1px solid #e6eef8"></textarea>
-        <div style="display:flex;gap:8px">
-          <button type="submit" class="btn btn-primary">Send</button>
-          <button type="button" id="saveLocal" class="btn btn-ghost">Save Draft</button>
-        </div>
-      </form>
-    </div>
-  </section>
-
+  <!-- Footer -->
   <footer>
-    <div class="wrap footer-inner">
-      <div>© <span id="year"></span> GlobeGenie</div>
-      <div class="muted">Built for clarity & real trips.</div>
-    </div>
+    <p>&copy; 2025 Travel Co. All rights reserved.</p>
   </footer>
 
-  <!-- CHAT FAB + BOX -->
-  <button id="chatFab" class="chat-fab" aria-label="Open chat">💬</button>
-
-  <div id="chatBox" class="chatbox" role="dialog" aria-hidden="true">
-    <div class="chat-header">
-      <div class="chat-title">Genie • Travel Assistant</div>
-      <button id="chatClose" style="background:transparent;border:0;color:#fff">✕</button>
+  <!-- Chatbot Widget -->
+  <button class="chatbot-toggle" onclick="toggleChat()">💬</button>
+  <div class="chatbot" id="chatbot">
+    <div class="chatbot-header">
+      <h4>Travel AI</h4>
+      <button onclick="toggleChat()">✖</button>
     </div>
-    <div id="chatBody" class="chat-body">
-      <div class="bubble bot">Hey — tell me your vibe (mountain / beach / city), days and budget. I’ll give a mini plan.</div>
-    </div>
-    <div class="chat-input">
-      <input id="chatInput" placeholder="e.g., Manali • 3 days • ₹15k" />
-      <button id="chatSend" class="btn btn-primary">Send</button>
-    </div>
+    <div class="chatbot-messages" id="messages"></div>
+    <input type="text" id="userInput" placeholder="Ask me anything...">
+    <button onclick="sendMessage()">Send</button>
   </div>
 
-  <!-- Leaflet JS -->
-  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <!-- Blog Modal -->
+  <div id="blogModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.8); color:#fff; justify-content:center; align-items:center; flex-direction:column;">
+    <h2 id="blogTitle"></h2>
+    <p id="blogContent"></p>
+    <button onclick="closeBlog()" class="btn">Close</button>
+  </div>
 
   <script>
-    /* Utilities */
-    document.getElementById('year').textContent = new Date().getFullYear();
-    // mobile nav toggle
-    const mobileToggle = document.getElementById('mobileToggle');
-    const navLinks = document.querySelector('.nav-links');
-    if (mobileToggle) mobileToggle.addEventListener('click', ()=> navLinks.classList.toggle('open'));
+    // Google Maps
+    function initMap() {
+      var india = {lat:20.5937, lng:78.9629};
+      var map = new google.maps.Map(document.getElementById('map'), {zoom:4, center:india});
+      new google.maps.Marker({position:india, map:map});
+    }
 
-    /* ============ Map (Leaflet) centered on India ============ */
-    const map = L.map('map', {scrollWheelZoom:false}).setView([22.5937,78.9629], 5);
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-      attribution: '&copy; OpenStreetMap contributors'
-    }).addTo(map);
+    // Blog Modal
+    function openBlog(title, content) {
+      document.getElementById('blogTitle').innerText = title;
+      document.getElementById('blogContent').innerText = content;
+      document.getElementById('blogModal').style.display = 'flex';
+    }
+    function closeBlog() {document.getElementById('blogModal').style.display = 'none';}
 
-    // sample places (north focus)
-    const places = [
-      {name:'Delhi', coords:[28.6139,77.2090], tags:['Heritage','Food'], summary:'Old Delhi chaos + New Delhi calm. Food & history.', itin:['Day1 - Old Delhi eats','Day2 - Lodi Art + India Gate','Day3 - Mehrauli ruins']},
-      {name:'Shimla', coords:[31.1048,77.1734], tags:['Mountains','Cafés'], summary:'Ridge walks and quiet cafés.', itin:['Day1 - Mall Road','Day2 - Jakhu Temple','Day3 - Local markets']},
-      {name:'Manali', coords:[32.2396,77.1887], tags:['Adventure','Valley'], summary:'Solang Valley & river-side cafés.', itin:['Day1 - Old Manali','Day2 - Solang activities','Day3 - Local village visit']},
-      {name:'Rishikesh', coords:[30.0869,78.2676], tags:['Spiritual','River'], summary:'Ganga aarti, rafting and yoga.', itin:['Day1 - Ganga aarti','Day2 - Rafting','Day3 - Ashram morning']},
-      {name:'Jaipur', coords:[26.9124,75.7873], tags:['Palaces','Markets'], summary:'Havelis, forts and rooftop meals.', itin:['Day1 - City Palace','Day2 - Amer Fort','Day3 - Bazaar food trail']},
-      {name:'Srinagar', coords:[34.0837,74.7973], tags:['Houseboats','Meadows'], summary:'Shikara, Mughal gardens, soft evenings.', itin:['Day1 - Dal Lake','Day2 - Gulmarg','Day3 - Pahalgam visit']},
-    ];
+    // Chatbot
+    function toggleChat(){document.getElementById('chatbot').style.display = document.getElementById('chatbot').style.display === 'flex' ? 'none' : 'flex';}
+    async function sendMessage(){
+      const userInput = document.getElementById('userInput').value;
+      const messagesDiv = document.getElementById('messages');
+      messagesDiv.innerHTML += `<p><b>You:</b> ${userInput}</p>`;
+      document.getElementById('userInput').value = '';
 
-    const drawer = document.getElementById('detailDrawer');
-    const drawerTitle = document.getElementById('drawerTitle');
-    const drawerTags = document.getElementById('drawerTags');
-    const drawerSummary = document.getElementById('drawerSummary');
-    const drawerItinerary = document.getElementById('drawerItinerary');
-    const closeDrawer = document.getElementById('closeDrawer');
-    const compareForPlaceBtn = document.getElementById('compareForPlace');
-
-    places.forEach(p=>{
-      const marker = L.marker(p.coords).addTo(map).bindPopup(`<strong>${p.name}</strong>`);
-      marker.on('click', ()=> openDrawer(p));
-    });
-
-    // card interaction
-    document.querySelectorAll('.dest-card').forEach(card=>{
-      card.addEventListener('click', ()=>{
-        const lat = parseFloat(card.dataset.lat), lng = parseFloat(card.dataset.lng);
-        map.setView([lat,lng],9,{animate:true});
-        const place = places.find(x => x.name.toLowerCase()===card.dataset.name.toLowerCase());
-        if(place) openDrawer(place);
+      // AI response (OpenAI API Placeholder)
+      const response = await fetch("https://api.openai.com/v1/chat/completions", {
+        method:"POST",
+        headers:{
+          "Content-Type":"application/json",
+          "Authorization":"Bearer YOUR_API_KEY"
+        },
+        body:JSON.stringify({
+          model:"gpt-3.5-turbo",
+          messages:[{role:"system",content:"You are a travel assistant."},{role:"user",content:userInput}]
+        })
       });
-    });
-
-    function openDrawer(place){
-      drawerTitle.textContent = place.name;
-      drawerTags.innerHTML = place.tags.map(t=>`<span class="tag">${t}</span>`).join(' ');
-      drawerSummary.textContent = place.summary;
-      drawerItinerary.innerHTML = `<h4 style="margin-top:10px">Sample 3-day plan</h4><ul style="margin-left:18px">${place.itin.map(i=>`<li>${i}</li>`).join('')}</ul>`;
-      drawer.style.display='block';
-      drawer.setAttribute('aria-hidden','false');
-
-      // set compare inputs for convenience
-      document.getElementById('cmpTo').value = place.name;
-      // highlight compare button to allow user to run compare quickly
-      compareForPlaceBtn.onclick = ()=> { document.getElementById('runCompareBtn').click(); };
+      const data = await response.json();
+      const aiMessage = data.choices[0].message.content;
+      messagesDiv.innerHTML += `<p><b>AI:</b> ${aiMessage}</p>`;
+      messagesDiv.scrollTop = messagesDiv.scrollHeight;
     }
-    if(closeDrawer) closeDrawer.addEventListener('click', ()=> { drawer.style.display='none'; drawer.setAttribute('aria-hidden','true'); });
-
-    /* ============ Compare logic (mock data) ============ */
-    const sampleDeals = [
-      {type:'flight', provider:'IndiGo', from:'Delhi', to:'Manali', date:'2025-09-12', price:6599, note:'via Kullu • 2h40m'},
-      {type:'flight', provider:'Air India', from:'Delhi', to:'Srinagar', date:'2025-09-15', price:7299, note:'non-stop • 1h25m'},
-      {type:'train', provider:'IRCTC', from:'Delhi', to:'Amritsar', date:'2025-09-12', price:850, note:'Shatabdi chair car'},
-      {type:'train', provider:'IRCTC', from:'Delhi', to:'Jaipur', date:'2025-09-12', price:650, note:'Shatabdi'},
-      {type:'stay', provider:'Homestay: Old Manali', from:'Manali', to:'Manali', date:'2025-09-12', price:2200, note:'per night • mountain view'},
-      {type:'stay', provider:'Haveli: Jaipur', from:'Jaipur', to:'Jaipur', date:'2025-09-13', price:2800, note:'per night • heritage stay'},
-      {type:'flight', provider:'Vistara', from:'Delhi', to:'Manali', date:'2025-09-12', price:7800, note:'direct • 1h45m'},
-      {type:'train', provider:'Rajdhani', from:'Delhi', to:'Varanasi', date:'2025-09-12', price:1200, note:'sleeper/AC options'},
-      {type:'stay', provider:'Resort: Manali Valley', from:'Manali', to:'Manali', date:'2025-09-12', price:5200, note:'per night • resort'}
-    ];
-
-    function runCompare(){
-      const from = (document.getElementById('cmpFrom').value||'').toLowerCase();
-      const to = (document.getElementById('cmpTo').value||'').toLowerCase();
-      const date = document.getElementById('cmpDate').value;
-      const mode = document.getElementById('cmpMode').value;
-
-      const rows = sampleDeals.filter(d=>{
-        const f = !from || d.from.toLowerCase().includes(from);
-        const t = !to || d.to.toLowerCase().includes(to);
-        const dt = !date || d.date===date;
-        const m = mode==='any' || d.type===mode;
-        return f && t && dt && m;
-      }).sort((a,b)=>a.price-b.price);
-
-      const body = document.getElementById('resultsBody');
-      if(rows.length===0){
-        // fallback: show aggregated cheapest per type for that route (or sample)
-        const fallback = sampleDeals.filter(d=> ( (!from || d.from.toLowerCase().includes(from)) && (!to || d.to.toLowerCase().includes(to)) ) );
-        if(fallback.length===0){
-          body.innerHTML = '<tr><td colspan="6" class="muted">No sample deals matched. Try broad terms like Delhi or Manali or leave date empty.</td></tr>';
-          drawChart([]);
-          return;
-        }
-        // compute min per type
-        const grouped = {};
-        fallback.forEach(d=>{
-          if(!grouped[d.type] || d.price < grouped[d.type].price) grouped[d.type] = d;
-        });
-        const arr = Object.values(grouped);
-        body.innerHTML = arr.map(r=>`<tr><td>${r.type}</td><td>${r.provider}</td><td>${r.from} → ${r.to}</td><td>${r.date}</td><td>₹${r.price.toLocaleString()}</td><td>${r.note}</td></tr>`).join('');
-        drawChart(arr);
-        return;
-      }
-      body.innerHTML = rows.map(r=>`<tr><td>${r.type}</td><td>${r.provider}</td><td>${r.from} → ${r.to}</td><td>${r.date}</td><td>₹${r.price.toLocaleString()}</td><td>${r.note}</td></tr>`).join('');
-      // draw simple chart: lowest price per type in the result set
-      const types = {};
-      rows.forEach(r=>{
-        if(!types[r.type] || r.price < types[r.type].price) types[r.type] = r;
-      });
-      drawChart(Object.values(types));
-    }
-
-    document.getElementById('runCompareBtn').addEventListener('click', runCompare);
-
-    /* ============ Simple bar chart (canvas) ============ */
-    function drawChart(items){
-      const canvas = document.getElementById('priceChart');
-      const ctx = canvas.getContext('2d');
-      // clear
-      ctx.clearRect(0,0,canvas.width,canvas.height);
-      if(!items || items.length===0){
-        // draw "no data"
-        ctx.fillStyle = '#f3f6f9';
-        ctx.fillRect(0,0,canvas.width,canvas.height);
-        ctx.fillStyle = '#9aa4b2';
-        ctx.font = '14px Poppins, Arial';
-        ctx.fillText('No data to chart', 12, 28);
-        return;
-      }
-      // prepare data
-      const padding = 30;
-      const barGap = 18;
-      const chartW = canvas.width - padding*2;
-      const barW = (chartW - (items.length-1)*barGap) / items.length;
-      const prices = items.map(i=>i.price);
-      const max = Math.max(...prices) * 1.1;
-      // draw axes labels
-      items.forEach((it, idx)=>{
-        const x = padding + idx*(barW + barGap);
-        const h = (it.price / max) * (canvas.height - 60);
-        const y = canvas.height - 30 - h;
-        // bar
-        ctx.fillStyle = 'rgba(1,31,63,0.9)'; // navy
-        ctx.fillRect(x, y, barW, h);
-        // label
-        ctx.fillStyle = '#001f3f';
-        ctx.font = '12px Poppins, Arial';
-        const label = it.type.toUpperCase();
-        ctx.fillText(label, x, canvas.height-12);
-        // price
-        ctx.fillStyle = '#001f3f';
-        ctx.font = '12px Poppins, Arial';
-        ctx.fillText('₹' + it.price.toLocaleString(), x, y - 6);
-      });
-    }
-
-    /* ============ Chatbot (rule-based now) ============ */
-    const chatFab = document.getElementById('chatFab');
-    const chatBox = document.getElementById('chatBox');
-    const chatClose = document.getElementById('chatClose');
-    const chatBody = document.getElementById('chatBody');
-    const chatInput = document.getElementById('chatInput');
-    const chatSend = document.getElementById('chatSend');
-
-    function appendChat(text, who='bot'){
-      const el = document.createElement('div');
-      el.className = 'bubble ' + (who==='user'?'user':'bot');
-      el.textContent = text;
-      chatBody.appendChild(el);
-      chatBody.scrollTop = chatBody.scrollHeight;
-    }
-
-    chatFab.addEventListener('click', ()=>{
-      const hidden = chatBox.style.display === 'flex';
-      chatBox.style.display = hidden ? 'none' : 'flex';
-      chatBox.setAttribute('aria-hidden', hidden ? 'true' : 'false');
-    });
-    chatClose.addEventListener('click', ()=>{ chatBox.style.display='none'; chatBox.setAttribute('aria-hidden','true'); });
-
-    function botReply(message){
-      const s = message.toLowerCase();
-      if(s.includes('compare') || s.includes('price')) return 'Use the Compare Prices section — enter From, To, and Date, then click Compare.';
-      if(s.includes('mountain') || s.includes('manali') || s.includes('shimla')) return 'Mountains — lovely. How many days and what budget?';
-      if(s.includes('beach') || s.includes('maldives') || s.includes('goa')) return 'Beach mode: private villa or budget island? Tell me rough budget.';
-      if(s.includes('train') || s.includes('flight')) return 'I can compare trains, flights and stays. Type: Compare Delhi to Manali on 2025-09-12';
-      if(s.includes('hi')||s.includes('hello')) return 'Hey 👋 Tell me the vibe + days + budget, or ask me to compare prices.';
-      return 'Nice — give me days + month + rough budget and I’ll suggest a mini-plan.';
-    }
-
-    function handleChatSend(){
-      const txt = (chatInput.value||'').trim();
-      if(!txt) return;
-      appendChat(txt,'user');
-      chatInput.value='';
-      setTimeout(()=> appendChat(botReply(txt),'bot'), 400);
-    }
-    chatSend.addEventListener('click', handleChatSend);
-    chatInput.addEventListener('keypress', e => { if(e.key==='Enter') handleChatSend(); });
-
-    /* ============ Contact form behavior ============ */
-    const contactForm = document.getElementById('contactForm');
-    if(contactForm){
-      contactForm.addEventListener('submit', (e)=>{
-        e.preventDefault();
-        const name = document.getElementById('contactName').value.trim();
-        const email = document.getElementById('contactEmail').value.trim();
-        const msg = document.getElementById('contactMsg').value.trim();
-        alert(`Thanks ${name}! We've got your message. We'll email/WhatsApp you at ${email}.`);
-        contactForm.reset();
-      });
-    }
-
-    // Save draft to localStorage
-    const saveBtn = document.getElementById('saveLocal');
-    if(saveBtn){
-      saveBtn.addEventListener('click', ()=>{
-        const name = document.getElementById('contactName').value.trim();
-        const email = document.getElementById('contactEmail').value.trim();
-        const msg = document.getElementById('contactMsg').value.trim();
-        localStorage.setItem('globeDraft', JSON.stringify({name,email,msg,ts:new Date().toISOString()}));
-        alert('Draft saved locally.');
-      });
-    }
-
-    // initial draw (empty)
-    drawChart([]);
   </script>
+  <script async defer src="https://maps.googleapis.com/maps/api/js?key=YOUR_GOOGLE_MAPS_API_KEY&callback=initMap"></script>
 </body>
 </html>

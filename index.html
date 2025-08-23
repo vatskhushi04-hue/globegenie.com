@@ -1,190 +1,267 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>GlobeGenie — Let’s get your trip started</title>
-  <meta name="description" content="GlobeGenie — minimal, navy & yellow travel planning with AI assistant, destinations and blogs." />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;800&display=swap" rel="stylesheet">
-  <!-- Leaflet for interactive map -->
-  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
-  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Travel Agency</title>
+  <style>
+    /* ====== GLOBAL STYLES ====== */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Arial', sans-serif;
+    }
+    body {
+      background-color: #f8f9fa;
+      color: #333;
+    }
+    a {
+      text-decoration: none;
+      color: inherit;
+    }
 
-  <!-- Main stylesheet -->
-  <link rel="stylesheet" href="style/style.css">
+    /* ====== NAVBAR ====== */
+    nav {
+      background-color: #001f3f; /* Navy Blue */
+      color: white;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 15px 30px;
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+    }
+    nav .logo {
+      font-size: 1.5rem;
+      font-weight: bold;
+    }
+    nav ul {
+      list-style: none;
+      display: flex;
+      gap: 20px;
+    }
+    nav ul li {
+      font-size: 1rem;
+    }
+    nav ul li a:hover {
+      color: #FFD700; /* Yellow */
+    }
+
+    /* ====== HERO SECTION ====== */
+    .hero {
+      height: 80vh;
+      background: url('https://images.unsplash.com/photo-1507525428034-b723cf961d3e') no-repeat center center/cover;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      color: white;
+      padding: 20px;
+    }
+    .hero h1 {
+      font-size: 3rem;
+      margin-bottom: 10px;
+    }
+    .hero p {
+      font-size: 1.5rem;
+      background: rgba(0,0,0,0.4);
+      padding: 10px 20px;
+      border-radius: 8px;
+    }
+
+    /* ====== BLOG SECTION ====== */
+    .blogs {
+      padding: 50px 20px;
+      max-width: 1200px;
+      margin: auto;
+    }
+    .blogs h2 {
+      text-align: center;
+      margin-bottom: 30px;
+      font-size: 2rem;
+      color: #001f3f;
+    }
+    .blog-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 20px;
+    }
+    .blog-card {
+      background: white;
+      border-radius: 10px;
+      overflow: hidden;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+      transition: transform 0.3s ease;
+    }
+    .blog-card:hover {
+      transform: scale(1.03);
+    }
+    .blog-card img {
+      width: 100%;
+      height: 200px;
+      object-fit: cover;
+    }
+    .blog-card h3 {
+      padding: 15px;
+      font-size: 1.2rem;
+      color: #333;
+    }
+
+    /* ====== MAP SECTION ====== */
+    .map-section {
+      padding: 50px 20px;
+      text-align: center;
+    }
+    .map-section iframe {
+      width: 100%;
+      height: 400px;
+      border: none;
+      border-radius: 10px;
+    }
+
+    /* ====== CHATBOT SECTION ====== */
+    .chatbot {
+      padding: 50px 20px;
+      max-width: 600px;
+      margin: auto;
+      text-align: center;
+    }
+    .chatbot h2 {
+      margin-bottom: 20px;
+      color: #001f3f;
+    }
+    .chat-container {
+      background: white;
+      border: 1px solid #ddd;
+      border-radius: 10px;
+      padding: 20px;
+      text-align: left;
+      height: 300px;
+      overflow-y: auto;
+      margin-bottom: 15px;
+    }
+    .chat-input {
+      display: flex;
+      gap: 10px;
+    }
+    .chat-input input {
+      flex: 1;
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+    }
+    .chat-input button {
+      background: #001f3f;
+      color: white;
+      padding: 10px 15px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    .chat-input button:hover {
+      background: #FFD700;
+      color: #001f3f;
+    }
+
+    /* ====== RESPONSIVE ====== */
+    @media (max-width: 768px) {
+      .hero h1 {
+        font-size: 2rem;
+      }
+      .hero p {
+        font-size: 1rem;
+      }
+    }
+  </style>
 </head>
 <body>
 
-  <!-- NAV -->
-  <header class="nav">
-    <div class="nav-inner">
-      <div class="brand"><span class="brand-accent">Globe</span>Genie</div>
-      <nav class="nav-links">
-        <a href="#hero">Home</a>
-        <a href="#destinations">Destinations</a>
-        <a href="#blogs">Blogs</a>
-        <a href="#contact">Contact</a>
-      </nav>
-      <button id="mobileToggle" class="mobile-toggle" aria-label="Open menu">☰</button>
-    </div>
-  </header>
+  <!-- ====== NAVBAR ====== -->
+  <nav>
+    <div class="logo">TravelCo</div>
+    <ul>
+      <li><a href="#hero">Home</a></li>
+      <li><a href="#blogs">Blogs</a></li>
+      <li><a href="#chatbot">Chat</a></li>
+      <li><a href="#map">Map</a></li>
+    </ul>
+  </nav>
 
-  <!-- HERO -->
-  <section id="hero" class="hero">
-    <div class="hero-wrap">
-      <h1 class="hero-title">Let’s get your trip started!</h1>
-      <p class="hero-sub">Tell me your vibe and I’ll stitch a clean plan — bold, simple, and ready to book.</p>
-      <div class="hero-ctas">
-        <a href="#destinations" class="btn btn-primary">Explore North India</a>
-        <a href="#blogs" class="btn btn-ghost">Read Stories</a>
+  <!-- ====== HERO SECTION ====== -->
+  <section class="hero" id="hero">
+    <h1>Let's Get Your Trip Started</h1>
+    <p>I Need A Break</p>
+  </section>
+
+  <!-- ====== BLOG SECTION ====== -->
+  <section class="blogs" id="blogs">
+    <h2>Travel Blogs</h2>
+    <div class="blog-grid">
+      <div class="blog-card">
+        <img src="https://images.unsplash.com/photo-1506744038136-46273834b3fb" alt="Beach">
+        <h3>Top 10 Beaches to Relax This Summer</h3>
+      </div>
+      <div class="blog-card">
+        <img src="https://images.unsplash.com/photo-1526778548025-fa2f459cd5c1" alt="Mountain">
+        <h3>Adventure Awaits: Best Hiking Spots</h3>
+      </div>
+      <div class="blog-card">
+        <img src="https://images.unsplash.com/photo-1505761671935-60b3a7427bad" alt="City">
+        <h3>City Escapes: Weekend Getaways</h3>
       </div>
     </div>
   </section>
 
-  <!-- DESTINATIONS + MAP -->
-  <section id="destinations" class="section">
-    <div class="wrap">
-      <h2 class="section-title">Explore North India</h2>
-      <p class="muted">Tap a marker on the map or open a card to see a short 3-day sample itinerary.</p>
-
-      <div class="dest-layout">
-        <div id="map" class="map"></div>
-
-        <div class="cards">
-          <article class="dest-card" data-name="Shimla" data-lat="31.1048" data-lng="77.1734">
-            <img src="https://images.unsplash.com/photo-1544723795-3fb6469f5b39?q=80&w=1400&auto=format&fit=crop" alt="Shimla">
-            <div class="card-body">
-              <h3>Shimla</h3>
-              <p class="muted">Colonial charm, ridge walks, cafés.</p>
-              <button class="btn btn-outline view-details">View Details</button>
-            </div>
-          </article>
-
-          <article class="dest-card" data-name="Manali" data-lat="32.2396" data-lng="77.1887">
-            <img src="https://images.unsplash.com/photo-1603262110263-fb0112e7cc33?q=80&w=1400&auto=format&fit=crop" alt="Manali">
-            <div class="card-body">
-              <h3>Manali</h3>
-              <p class="muted">Solang adventures and cozy old town cafés.</p>
-              <button class="btn btn-outline view-details">View Details</button>
-            </div>
-          </article>
-
-          <article class="dest-card" data-name="Rishikesh" data-lat="30.0869" data-lng="78.2676">
-            <img src="https://images.unsplash.com/photo-1603262110265-8f2592f06f3c?q=80&w=1400&auto=format&fit=crop" alt="Rishikesh">
-            <div class="card-body">
-              <h3>Rishikesh</h3>
-              <p class="muted">Ganga aarti, yoga stays, river rafting.</p>
-              <button class="btn btn-outline view-details">View Details</button>
-            </div>
-          </article>
-
-          <article class="dest-card" data-name="Jaipur" data-lat="26.9124" data-lng="75.7873">
-            <img src="https://images.unsplash.com/photo-1581798269146-19f545139ebe?q=80&w=1400&auto=format&fit=crop" alt="Jaipur">
-            <div class="card-body">
-              <h3>Jaipur</h3>
-              <p class="muted">Palaces, vibrant bazaars, rooftop eats.</p>
-              <button class="btn btn-outline view-details">View Details</button>
-            </div>
-          </article>
-        </div>
-      </div>
-
-      <!-- Detail drawer (hidden until a marker/card clicked) -->
-      <div id="detailDrawer" class="drawer hidden" aria-hidden="true">
-        <button id="closeDrawer" class="drawer-close" aria-label="Close">✕</button>
-        <h3 id="drawerTitle">Destination</h3>
-        <div id="drawerTags" class="drawer-tags"></div>
-        <p id="drawerSummary" class="muted"></p>
-        <div id="drawerItinerary"></div>
-        <div class="drawer-actions">
-          <a href="#contact" class="btn btn-primary">Plan this Trip</a>
-          <button id="drawerCompare" class="btn btn-ghost">Compare Prices</button>
-        </div>
-      </div>
-
-    </div>
+  <!-- ====== MAP SECTION ====== -->
+  <section class="map-section" id="map">
+    <h2>Explore Our Locations</h2>
+    <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3153.08658648536!2d-122.41941508468292!3d37.77492977975926!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x80858064e5a4e3ed%3A0x37c833f3b1f74bb!2sSan%20Francisco%2C%20CA%2C%20USA!5e0!3m2!1sen!2sin!4v1693232993937!5m2!1sen!2sin" allowfullscreen></iframe>
   </section>
 
-  <!-- BLOGS -->
-  <section id="blogs" class="section bg-soft">
-    <div class="wrap">
-      <h2 class="section-title">Travel Stories & Tips</h2>
-      <div class="blog-grid">
-        <article class="blog-card">
-          <img src="https://images.unsplash.com/photo-1507525428034-b723cf961d3e?q=80&w=1400&auto=format&fit=crop" alt="">
-          <div class="blog-body">
-            <h3>I Need a Break, But I Can't Figure Out Where to Go</h3>
-            <p class="muted">Overwhelmed by choices? We show you a 4-step way to pick a trip — fast.</p>
-            <a href="#" class="link">Read →</a>
-          </div>
-        </article>
-
-        <article class="blog-card">
-          <img src="https://images.unsplash.com/photo-1549887534-3d1f1c4a2d7d?q=80&w=1400&auto=format&fit=crop" alt="">
-          <div class="blog-body">
-            <h3>North India Under ₹12k: Weekend Plans</h3>
-            <p class="muted">Budget-friendly itineraries that still feel premium.</p>
-            <a href="#" class="link">Read →</a>
-          </div>
-        </article>
-
-        <article class="blog-card">
-          <img src="https://images.unsplash.com/photo-1526772662000-3f88f10405ff?q=80&w=1400&auto=format&fit=crop" alt="">
-          <div class="blog-body">
-            <h3>Train vs Flight vs Bus — What’s Smart?</h3>
-            <p class="muted">Practical advice: when to save time vs when to save money.</p>
-            <a href="#" class="link">Read →</a>
-          </div>
-        </article>
-      </div>
-    </div>
-  </section>
-
-  <!-- CONTACT -->
-  <section id="contact" class="section">
-    <div class="wrap contact-wrap">
-      <h2 class="section-title">Talk to GlobeGenie</h2>
-      <p class="muted">Tell us dates, rough budget, and vibe — we’ll take it from there.</p>
-      <form id="leadForm" class="lead-form">
-        <input id="leadName" placeholder="Your name" required>
-        <input id="leadEmail" type="email" placeholder="Email or WhatsApp" required>
-        <textarea id="leadMsg" placeholder="Where, when, budget..." rows="4"></textarea>
-        <div class="form-actions">
-          <button type="submit" class="btn btn-primary">Send</button>
-          <button type="button" id="saveDraft" class="btn btn-ghost">Save Draft</button>
-        </div>
-      </form>
-    </div>
-  </section>
-
-  <!-- FOOTER -->
-  <footer class="footer">
-    <div class="wrap footer-inner">
-      <div>© <span id="year"></span> GlobeGenie</div>
-      <div class="muted">Built for travel, built to move.</div>
-    </div>
-  </footer>
-
-  <!-- CHATBOT FAB -->
-  <button id="chatLaunch" class="chat-fab" aria-label="Open chat">💬</button>
-
-  <!-- CHAT BOX -->
-  <div id="chatBox" class="chatbox hidden" aria-hidden="true">
-    <div class="chat-header">
-      <div class="chat-title">Genie • Travel Assistant</div>
-      <button id="chatClose" class="chat-close" aria-label="Close chat">✕</button>
-    </div>
-    <div id="chatMessages" class="chat-messages">
-      <div class="chat-bubble bot">Hey — tell me your vibe (mountain / beach / city) + days + budget.</div>
+  <!-- ====== CHATBOT SECTION ====== -->
+  <section class="chatbot" id="chatbot">
+    <h2>AI Travel Assistant</h2>
+    <div class="chat-container" id="chat-container">
+      <p><strong>Bot:</strong> Hi! How can I help you plan your trip?</p>
     </div>
     <div class="chat-input">
-      <input id="chatInput" placeholder="e.g., Manali • 3 days • ₹15k" />
-      <button id="chatSend" class="btn btn-primary">Send</button>
+      <input type="text" id="user-input" placeholder="Type your message...">
+      <button onclick="sendMessage()">Send</button>
     </div>
-  </div>
+  </section>
 
-  <!-- Main script -->
-  <script src="script/script.js"></script>
+  <!-- ====== SCRIPT ====== -->
+  <script>
+    function sendMessage() {
+      const input = document.getElementById('user-input');
+      const container = document.getElementById('chat-container');
+      if(input.value.trim() === '') return;
+
+      // User message
+      const userMsg = document.createElement('p');
+      userMsg.innerHTML = '<strong>You:</strong> ' + input.value;
+      container.appendChild(userMsg);
+
+      // Bot response
+      const botMsg = document.createElement('p');
+      botMsg.innerHTML = '<strong>Bot:</strong> ' + getBotResponse(input.value);
+      container.appendChild(botMsg);
+
+      container.scrollTop = container.scrollHeight;
+      input.value = '';
+    }
+
+    function getBotResponse(message) {
+      const lower = message.toLowerCase();
+      if(lower.includes('hello') || lower.includes('hi')) return 'Hello! Where would you like to travel?';
+      if(lower.includes('beach')) return 'Great choice! Maldives or Bali could be perfect!';
+      if(lower.includes('mountain')) return 'Himalayas or Swiss Alps sound amazing!';
+      return 'That sounds exciting! Tell me more about your plans.';
+    }
+  </script>
+
 </body>
 </html>

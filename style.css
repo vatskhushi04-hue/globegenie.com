@@ -1,152 +1,104 @@
-/* Reset */
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-  font-family: Arial, sans-serif;
+:root{
+  --navy:#001f3f;   /* primary */
+  --yellow:#fbc531; /* accent */
+  --soft:#f3f6f9;
+  --muted:#6b7280;
+  --card:#ffffff;
+  --radius:12px;
+  --shadow: 0 8px 26px rgba(2,6,23,0.08);
+  --max:1100px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%}
+body{
+  font-family: "Poppins", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+  background:var(--soft);
+  color:var(--navy);
+  -webkit-font-smoothing:antialiased;
+  -moz-osx-font-smoothing:grayscale;
+  line-height:1.5;
 }
 
-/* Header */
-.header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 15px 20px;
-  background: #2c3e50;
-  color: #fff;
-}
+/* NAV */
+.nav{background:var(--navy);color:#fff;position:sticky;top:0;z-index:60}
+.nav-inner{max-width:var(--max);margin:0 auto;display:flex;align-items:center;justify-content:space-between;padding:14px}
+.brand{font-weight:800;font-size:20px}
+.brand-accent{color:var(--yellow)}
+.nav-links{display:flex;gap:18px}
+.nav-links a{color:#e6eef8;text-decoration:none;font-weight:600}
+.nav-links a:hover{color:#fff}
+.mobile-toggle{display:none;background:transparent;border:0;color:var(--yellow);font-size:22px}
 
-.logo {
-  font-size: 1.5em;
-  font-weight: bold;
-}
+/* HERO */
+.hero{padding:64px 18px;text-align:center;background:linear-gradient(135deg,var(--navy),#0b2540);color:#fff}
+.hero-wrap{max-width:900px;margin:0 auto}
+.hero-title{font-size:clamp(26px,4vw,40px);font-weight:800;margin-bottom:10px}
+.hero-sub{opacity:.95;margin-bottom:18px}
+.hero-ctas{display:flex;gap:12px;justify-content:center;flex-wrap:wrap}
+.btn{border-radius:999px;padding:10px 18px;font-weight:700;cursor:pointer;border:0}
+.btn-primary{background:var(--yellow);color:var(--navy)}
+.btn-ghost{background:transparent;color:#fff;border:1px solid rgba(255,255,255,.12)}
 
-.nav ul {
-  display: flex;
-  gap: 20px;
-}
+/* SECTION */
+.section{padding:48px 18px}
+.wrap{max-width:var(--max);margin:0 auto}
 
-.nav ul li {
-  list-style: none;
-}
+/* DEST LAYOUT */
+.dest-layout{display:grid;grid-template-columns:1fr 420px;gap:18px;align-items:start}
+.map{height:420px;border-radius:12px;overflow:hidden;box-shadow:var(--shadow)}
+.cards{display:grid;gap:14px}
+.dest-card{background:var(--card);border-radius:12px;overflow:hidden;box-shadow:var(--shadow);display:flex;gap:0;cursor:pointer}
+.dest-card img{width:160px;object-fit:cover;height:100%}
+.card-body{padding:12px;display:flex;flex-direction:column;gap:8px}
+.tag{background:var(--soft);color:var(--muted);padding:6px 10px;border-radius:999px;font-weight:700;font-size:12px}
+.btn-outline{background:transparent;border:1px solid #e6eef8;padding:8px 12px;border-radius:8px;color:var(--navy);font-weight:700}
 
-.nav ul li a {
-  color: #fff;
-  text-decoration: none;
-}
+/* DRAWER */
+.drawer{position:fixed;right:18px;bottom:120px;width:360px;max-width:92vw;background:var(--card);border-radius:12px;box-shadow:var(--shadow);padding:14px;z-index:80}
+.drawer-close{background:transparent;border:0;font-size:18px;float:right;color:var(--muted)}
+.drawer h3{margin-top:4px;margin-bottom:6px}
+.drawer-tags{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:8px}
+.drawer .muted{color:var(--muted)}
 
-.menu-toggle {
-  display: none;
-  font-size: 1.8em;
-  cursor: pointer;
-}
+/* BLOG GRID */
+.bg-soft{background:#fbfdff}
+.blog-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:18px}
+.blog-card{background:var(--card);border-radius:12px;overflow:hidden;box-shadow:var(--shadow)}
+.blog-card img{width:100%;height:160px;object-fit:cover}
+.blog-body{padding:12px}
+.link{color:var(--yellow);font-weight:700;text-decoration:none}
 
-/* Hero */
-.hero {
-  background: url('https://source.unsplash.com/1600x600/?travel,holiday') no-repeat center/cover;
-  color: #fff;
-  text-align: center;
-  padding: 80px 20px;
-}
+/* CONTACT */
+.contact-wrap{text-align:center}
+.lead-form{display:grid;gap:10px;max-width:560px;margin:14px auto}
+.lead-form input,.lead-form textarea{padding:12px;border-radius:10px;border:1px solid #e6eef8;outline:none}
+.form-actions{display:flex;gap:10px;justify-content:center}
 
-.hero h1 {
-  font-size: 2em;
-  margin-bottom: 15px;
-}
+/* FOOTER */
+.footer{background:var(--navy);color:#dbeafe;padding:18px}
+.footer-inner{max-width:var(--max);margin:0 auto;display:flex;justify-content:space-between;align-items:center;gap:10px}
 
-.btn {
-  display: inline-block;
-  padding: 10px 20px;
-  background: #e67e22;
-  color: #fff;
-  text-decoration: none;
-  border-radius: 5px;
-  margin-top: 15px;
-}
+/* CHAT FAB + BOX */
+.chat-fab{position:fixed;right:18px;bottom:18px;background:var(--yellow);color:var(--navy);width:56px;height:56px;border-radius:999px;display:flex;align-items:center;justify-content:center;font-weight:800;box-shadow:var(--shadow);border:0;cursor:pointer;z-index:90}
+.chatbox{position:fixed;right:18px;bottom:86px;width:320px;max-height:68vh;background:var(--card);border-radius:12px;box-shadow:var(--shadow);display:flex;flex-direction:column;overflow:hidden;z-index:90}
+.chat-header{display:flex;justify-content:space-between;align-items:center;padding:10px 12px;border-bottom:1px solid #eef3fb}
+.chat-title{font-weight:800;color:var(--navy)}
+.chat-messages{padding:12px;overflow:auto;flex:1;background:#f8fafc}
+.chat-bubble{background:#eef2ff;padding:8px 10px;border-radius:12px;display:inline-block;margin-bottom:8px;max-width:82%}
+.chat-bubble.user{background:#111827;color:#fff;margin-left:auto}
+.chat-input{display:flex;gap:8px;padding:10px;border-top:1px solid #eef3fb}
 
-/* Destinations */
-.destinations {
-  padding: 50px 20px;
-  text-align: center;
-}
+/* UTILS */
+.hidden{display:none}
 
-.grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-  gap: 20px;
-  margin-top: 20px;
+/* RESPONSIVE */
+@media(max-width:1000px){
+  .dest-layout{grid-template-columns:1fr}
+  .cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr))}
 }
-
-.card img {
-  width: 100%;
-  border-radius: 10px;
-}
-
-/* Blogs */
-.blogs {
-  padding: 50px 20px;
-  background: #f9f9f9;
-  text-align: center;
-}
-
-.blog-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-  gap: 20px;
-  margin-top: 20px;
-}
-
-.blog-grid article img {
-  width: 100%;
-  border-radius: 10px;
-}
-
-/* Contact */
-.contact {
-  padding: 50px 20px;
-  text-align: center;
-}
-
-.contact-form {
-  max-width: 500px;
-  margin: 0 auto;
-  display: flex;
-  flex-direction: column;
-  gap: 15px;
-}
-
-.contact-form input,
-.contact-form textarea {
-  padding: 10px;
-  border: 1px solid #ccc;
-  border-radius: 5px;
-}
-
-/* Footer */
-.footer {
-  text-align: center;
-  padding: 15px;
-  background: #2c3e50;
-  color: #fff;
-}
-
-/* Responsive */
-@media (max-width: 768px) {
-  .nav ul {
-    display: none;
-    flex-direction: column;
-    background: #34495e;
-    position: absolute;
-    top: 60px;
-    right: 20px;
-    width: 200px;
-    border-radius: 5px;
-    padding: 10px;
-  }
-  .nav ul.show {
-    display: flex;
-  }
-  .menu-toggle {
-    display: block;
-  }
+@media(max-width:720px){
+  .nav-links{display:none}
+  .mobile-toggle{display:block}
+  .hero{padding:40px 16px}
+  .chatbox{right:12px;left:12px;width:auto}
 }

@@ -499,3 +499,194 @@
   </script>
 </body>
 </html>
+<!DOCTYPE html><html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Travel Explorer</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      background: #f9f9f9;
+      color: #333;
+    }
+    header {
+      background: #0077b6;
+      color: white;
+      padding: 1rem;
+      text-align: center;
+    }
+    nav {
+      display: flex;
+      justify-content: center;
+      background: #023e8a;
+      flex-wrap: wrap;
+    }
+    nav a {
+      color: white;
+      padding: 1rem;
+      text-decoration: none;
+    }
+    nav a:hover {
+      background: #0096c7;
+    }
+    section {
+      padding: 2rem;
+      max-width: 1000px;
+      margin: auto;
+    }
+    .hero {
+      height: 300px;
+      background: url('banner.jpg') center/cover no-repeat;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      color: white;
+      font-size: 2rem;
+      font-weight: bold;
+    }
+    .chatbot {
+      background: #e0f7ff;
+      padding: 1rem;
+      border-radius: 8px;
+    }
+    .map {
+      text-align: center;
+    }
+    svg {
+      max-width: 100%;
+      height: auto;
+      cursor: pointer;
+    }
+    .blog {
+      background: #f1faff;
+      padding: 1rem;
+      border-radius: 8px;
+    }
+    footer {
+      text-align: center;
+      padding: 1rem;
+      background: #0077b6;
+      color: white;
+      margin-top: 2rem;
+    }
+    form input, form textarea, form button {
+      width: 100%;
+      padding: 0.7rem;
+      margin: 0.3rem 0;
+    }
+    form button {
+      background: #0077b6;
+      color: white;
+      border: none;
+      cursor: pointer;
+    }
+    form button:hover {
+      background: #0096c7;
+    }
+    #regionInfo {
+      margin-top: 1rem;
+      padding: 1rem;
+      background: #e0f7ff;
+      border-radius: 8px;
+      display: none;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Travel Explorer</h1>
+    <p>Find your perfect destination ✈️</p>
+  </header>  <nav>
+    <a href="#home">Home</a>
+    <a href="#bot">AI Bot</a>
+    <a href="#explore">Explore India</a>
+    <a href="#blog">Blog</a>
+    <a href="#query">Query</a>
+  </nav>  <div class="hero" id="home">
+    Your Banner Image Here
+  </div>  <section id="bot">
+    <h2>AI Travel Assistant</h2>
+    <div class="chatbot">
+      <p><b>Bot:</b> Hi! Tell me your mood or budget, I’ll suggest a destination 😊</p>
+      <input type="text" id="userInput" placeholder="Type here...">
+      <button onclick="chat()">Send</button>
+      <div id="chatOutput"></div>
+    </div>
+  </section>  <section id="explore">
+    <h2>Explore India</h2>
+    <div class="map">
+      <!-- Replace with a detailed India SVG map -->
+      <object type="image/svg+xml" data="india-map.svg" id="indiaMap"></object>
+      <p>Click on a region to see itineraries, budgets, and stays.</p>
+      <div id="regionInfo"></div>
+    </div>
+  </section>  <section id="blog">
+    <h2>Travel Blog</h2>
+    <div class="blog">
+      <h3>Hidden Gems of Kashmir</h3>
+      <p>Discover the untouched valleys, lakes, and local food culture...</p>
+    </div>
+  </section>  <section id="query">
+    <h2>Contact / Query</h2>
+    <form id="contactForm">
+      <input type="text" name="name" placeholder="Your Name" required>
+      <input type="email" name="email" placeholder="Your Email" required>
+      <textarea name="message" placeholder="Your Query" required></textarea>
+      <button type="submit">Submit</button>
+    </form>
+  </section>  <footer>
+    <p>© 2025 Travel Explorer. All Rights Reserved.</p>
+  </footer>  <script>
+    function chat(){
+      let input = document.getElementById("userInput").value;
+      let output = document.getElementById("chatOutput");
+      if(input){
+        output.innerHTML += `<p><b>You:</b> ${input}</p>`;
+        output.innerHTML += `<p><b>Bot:</b> That sounds exciting! Soon I’ll suggest real destinations here.</p>`;
+        document.getElementById("userInput").value = '';
+      }
+    }
+
+    const regions = {
+      kashmir: "Kashmir Itinerary: 5 days covering Srinagar, Gulmarg, Pahalgam. Budget: ₹15,000–25,000. Stay: Houseboats, resorts.",
+      goa: "Goa Itinerary: 4 days with beaches, forts, nightlife. Budget: ₹10,000–20,000. Stay: Beach huts, boutique hotels.",
+      kerala: "Kerala Itinerary: 6 days with Alleppey houseboats, Munnar tea gardens. Budget: ₹20,000–30,000. Stay: Backwater resorts, homestays.",
+      rajasthan: "Rajasthan Itinerary: 7 days Jaipur, Udaipur, Jaisalmer. Budget: ₹25,000–40,000. Stay: Heritage hotels, forts.",
+      delhi: "Delhi Itinerary: 3 days visiting Red Fort, India Gate, local food tours. Budget: ₹8,000–15,000. Stay: Budget hotels, hostels."
+    };
+
+    // Listen to clicks on the SVG map once it loads
+    document.getElementById("indiaMap").addEventListener("load", function(){
+      const svgDoc = this.contentDocument;
+      for(let region in regions){
+        let elem = svgDoc.getElementById(region);
+        if(elem){
+          elem.addEventListener('click', () => {
+            let info = document.getElementById("regionInfo");
+            info.style.display = 'block';
+            info.innerHTML = `<b>${region.toUpperCase()}:</b> ${regions[region]}`;
+          });
+        }
+      }
+    });
+
+    // Contact form submission with Formspree
+    document.getElementById("contactForm").addEventListener("submit", async function(e){
+      e.preventDefault();
+      const formData = new FormData(this);
+      const response = await fetch("https://formspree.io/f/your-form-id", {
+        method: "POST",
+        body: formData,
+        headers: { 'Accept': 'application/json' }
+      });
+      if(response.ok){
+        alert("Thank you! Your query has been submitted.");
+        this.reset();
+      } else {
+        alert("Oops! Something went wrong.");
+      }
+    });
+  </script></body>
+</html>
